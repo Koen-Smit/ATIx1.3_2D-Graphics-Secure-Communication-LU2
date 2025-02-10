@@ -1,3 +1,4 @@
+using LU2_WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LU2_WebApi.Controllers;
@@ -11,6 +12,7 @@ public class WeatherForecastController : ControllerBase
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
+    private static List<WeatherForecast> _weatherForecasts = new List<WeatherForecast>();
     private readonly ILogger<WeatherForecastController> _logger;
 
     public WeatherForecastController(ILogger<WeatherForecastController> logger)
@@ -18,15 +20,35 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
+    // GET: /WeatherForecast
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        return _weatherForecasts;
+    }
+
+    // POST: /WeatherForecast
+    [HttpPost]
+    public IActionResult Post([FromBody] WeatherForecast forecast)
+    {
+        if (forecast == null)
         {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+            return BadRequest("Invalid weather forecast data.");
+        }
+
+        _weatherForecasts.Add(forecast);
+        return CreatedAtAction(nameof(Get), new { date = forecast.Date }, forecast);
+    }
+
+    // GET: /WeatherForecast/{date}
+    [HttpGet("{date}")]
+    public IActionResult GetByDate(DateOnly date)
+    {
+        var forecast = _weatherForecasts.FirstOrDefault(f => f.Date == date);
+        if (forecast == null)
+        {
+            return NotFound("Weather forecast for the given date not found.");
+        }
+        return Ok(forecast);
     }
 }

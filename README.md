@@ -5,6 +5,10 @@
 dotnet new webapi --use-controllers -n LU2-WebApi
 dotnet new solution
 
+https://localhost:7067/swagger
+https://localhost:7067/WeatherForecast
+
+
 ---------------------------------------------------------------------------------------------------------------------------
 
 # API Endpoints & Responses

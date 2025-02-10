@@ -1,0 +1,164 @@
+[
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Environment2DController",
+    "Method": "GetAll",
+    "RelativePath": "Environment2D",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LU2_WebApi.Models.Environment2D, LU2-WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Environment2DController",
+    "Method": "Create",
+    "RelativePath": "Environment2D",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "environment",
+        "Type": "LU2_WebApi.Models.Environment2D",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "LU2_WebApi.Models.Environment2D",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Environment2DController",
+    "Method": "GetById",
+    "RelativePath": "Environment2D/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "LU2_WebApi.Models.Environment2D",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Environment2DController",
+    "Method": "Update",
+    "RelativePath": "Environment2D/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedEnvironment",
+        "Type": "LU2_WebApi.Models.Environment2D",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Environment2DController",
+    "Method": "Delete",
+    "RelativePath": "Environment2D/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
+    "Method": "Get",
+    "RelativePath": "WeatherForecast",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LU2_WebApi.Models.WeatherForecast, LU2-WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetWeatherForecast"
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
+    "Method": "Post",
+    "RelativePath": "WeatherForecast",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "forecast",
+        "Type": "LU2_WebApi.Models.WeatherForecast",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
+    "Method": "GetByDate",
+    "RelativePath": "WeatherForecast/{date}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateOnly",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
