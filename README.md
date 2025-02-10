@@ -4,7 +4,6 @@
 dotnet new webapi --use-controllers -n LU2-WebApi
 dotnet new solution
 
-```markdown
 # API Endpoints & Responses
 
 ## Environment Endpoints
