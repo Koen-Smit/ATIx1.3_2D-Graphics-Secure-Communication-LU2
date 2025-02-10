@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "1EX/WkE3kPs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\koens\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.1\\microsoft.aspnetcore.openapi.9.0.1.nupkg.sha512",
+    "C:\\Users\\koens\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
