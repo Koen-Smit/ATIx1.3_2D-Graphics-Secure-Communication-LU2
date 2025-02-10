@@ -1,8 +1,11 @@
 # ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2
 
+
 # Create webapi
 dotnet new webapi --use-controllers -n LU2-WebApi
 dotnet new solution
+
+---------------------------------------------------------------------------------------------------------------------------
 
 # API Endpoints & Responses
 
@@ -85,6 +88,41 @@ dotnet new solution
   "error": "Bad Request",
   "message": "Missing required field: name."
 }
+```
+
+### PUT `/api/environments/{id}` → Update an environment
+- **Statuscodes:**
+  - `200 OK` → Succesvol bijgewerkt
+  - `400 Bad Request` → Ongeldige invoer
+  - `404 Not Found` → Omgeving niet gevonden
+
+#### **Request Body**
+```json
+{
+  "name": "Updated Forest",
+  "maxHeight": 600,
+  "maxLength": 900
+}
+```
+
+#### **Response**
+```json
+{
+  "id": 1,
+  "name": "Updated Forest",
+  "maxHeight": 600,
+  "maxLength": 900
+}
+```
+
+### DELETE `/api/environments/{id}` → Delete an environment
+- **Statuscodes:**
+  - `204 No Content` → Succesvol verwijderd
+  - `404 Not Found` → Omgeving niet gevonden
+
+#### **Response**
+```json
+{}
 ```
 
 ---
@@ -180,6 +218,5 @@ dotnet new solution
   "error": "Unauthorized",
   "message": "Invalid username or password."
 }
-```
 ```
 
