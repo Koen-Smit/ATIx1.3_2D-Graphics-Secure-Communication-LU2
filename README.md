@@ -27,7 +27,7 @@ POST /api/users/login → Authenticate user
 ## Environment Endpoints
 GET /api/environments ->
 
-```
+```JSON
 {
   "environments": [
     {
@@ -49,7 +49,7 @@ GET /api/environments ->
 
 GET /api/environments/1 →
 
-```
+```JSON
 {
   "id": 1,
   "name": "Forest",
@@ -60,7 +60,7 @@ GET /api/environments/1 →
 
 ## Object Endpoints
 GET /api/environments/1/objects →
-```
+```JSON
 {
   "objects": [
     {
@@ -86,7 +86,7 @@ GET /api/environments/1/objects →
 ```
 
 GET /api/environments/1/objects/101 →
-```
+```JSON
 {
   "id": 101,
   "prefabId": "tree-01",
@@ -98,14 +98,10 @@ GET /api/environments/1/objects/101 →
 }
 ```
 
-POST /api/environments/{envId}/objects → Add a new object to an environment
-PUT /api/environments/{envId}/objects/{id} → Update an object
-DELETE /api/environments/{envId}/objects/{id} → Delete an object
-
 
 ## User Endpoints
 POST /api/users/register →
-```
+```json
 {
   "username": "JohnDoe",
   "password": "securepassword123"
@@ -113,7 +109,7 @@ POST /api/users/register →
 ```
 
 POST /api/users/login →
-```
+```json
 {
   "username": "JohnDoe",
   "password": "securepassword123"
@@ -124,7 +120,6 @@ POST /api/users/login →
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
-
 
 
 
