@@ -159,6 +159,9 @@ dotnet new solution
 }
 ```
 
+- PUT /api/environments/{envId}/objects/{id} → Update een object
+- DELETE /api/environments/{envId}/objects/{id} → Verwijder een object
+
 ---
 
 ## User Endpoints
