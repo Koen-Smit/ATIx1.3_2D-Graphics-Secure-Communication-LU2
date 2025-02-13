@@ -1,27 +1,18 @@
-using LU2_WebApi.Repositorys;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Get the connection string from configuration
-var connectionString = builder.Configuration.GetConnectionString("SqlConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("SqlConnectionString")
+    ?? throw new InvalidOperationException("Connection string is missing");
 
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("Connection string is missing");
-}
+builder.Services.AddSingleton(connectionString);
 
-// Register repositories and pass the connection string to them
-builder.Services.AddTransient(o => new IEnvironment2DRepository(connectionString));
-builder.Services.AddTransient(o => new IObject2DRepository(connectionString));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 var app = builder.Build();
 
-// Swagger UI
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

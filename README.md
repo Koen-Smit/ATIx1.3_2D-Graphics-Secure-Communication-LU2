@@ -1,42 +1,61 @@
 # ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2
 
-# Create db
+## TO DO:
 
-- connect to localdb:
-Server name: (localdb)\MSSQLLocalDB<br>
-Authentication: Windows Authentication<br>
+### Handling Concurrency Issues in API
+**Problem:** Concurrent Updates Overwriting Data
+
+### Bulk Operations and Database Transactions
+**Question:** What if saving one of the 100 objects fails?  
+**Considerations:**
+- What should the final state of the system be?
+- Which HTTP status code is appropriate?
+
+**Possible Outcomes:**
+- 99 objects saved
+- 0 objects saved
+
+### Adding a User
+**Details:**
+- Username
+- Hashed password
+- Foreign key or table to add multiple environments to the user
+
+## Create Database
+
+- Connect to localdb:
+  - **Server name:** (localdb)\MSSQLLocalDB
+  - **Authentication:** Windows Authentication
 - Right-click "databases" and choose: 'New database'
-- use db.sql script in this repo to create db
+- Use `db.sql` script in this repo to create the database
 
+## Database Usage
+- Object-Relational-Mapping framework (ORM)
+- Dapper, why? - Lightweight & fast, still uses queries which is useful for skill development
 
-# Db usage
-- Object-Relational-Mappingframework(ORM)
-- Dapper, waarom? - lichtgewicht & snel, nogsteeds queries dus nuttig voor vaardigheid evt.
+### User Secrets:
+- `dotnet user-secrets init`
+- `dotnet user-secrets set "SqlConnectionString" "(your connectionstringhere)"`
+  - `(Server=(localdb)\\MSSQLLocalDB;Database=;Integrated Security=True;)`
 
-### user secrets:
-- dotnet user-secrets init 
-- dotnet user-secrets set "SqlConnectionString" "(your connectionstringhere)
-- (Server=(localdb)\\MSSQLLocalDB;Database=;Integrated Security=True;)
+## Create Web API
+- `dotnet new webapi --use-controllers -n LU2-WebApi`
+- `dotnet new solution`
 
+Access the API:
+- [Swagger](https://localhost:7067/swagger)
+- [WeatherForecast](https://localhost:7067/WeatherForecast)
 
-
-# Create webapi
-dotnet new webapi --use-controllers -n LU2-WebApi
-dotnet new solution
-
-https://localhost:7067/swagger
-https://localhost:7067/WeatherForecast
-
-
----------------------------------------------------------------------------------------------------------------------------
+---
 
 # API Endpoints & Responses
 
 ## Environment Endpoints
+
 ### GET `/api/environments` → Get all environments
-- **Statuscodes:**
-  - `200 OK` → Succesvolle respons
-  - `500 Internal Server Error` → Serverfout
+- **Status Codes:**
+  - `200 OK` → Successful response
+  - `500 Internal Server Error` → Server error
 
 #### **Response**
 ```json
@@ -59,9 +78,9 @@ https://localhost:7067/WeatherForecast
 ```
 
 ### GET `/api/environments/{id}` → Get a specific environment by ID
-- **Statuscodes:**
-  - `200 OK` → Omgeving gevonden
-  - `404 Not Found` → Omgeving niet gevonden
+- **Status Codes:**
+  - `200 OK` → Environment found
+  - `404 Not Found` → Environment not found
 
 #### **Response**
 ```json
@@ -73,7 +92,7 @@ https://localhost:7067/WeatherForecast
 }
 ```
 
-#### **Fout (404 Not Found)**
+#### **Error (404 Not Found)**
 ```json
 {
   "error": "Not Found",
@@ -82,9 +101,9 @@ https://localhost:7067/WeatherForecast
 ```
 
 ### POST `/api/environments` → Create a new environment
-- **Statuscodes:**
-  - `201 Created` → Succesvol aangemaakt
-  - `400 Bad Request` → Ongeldige invoer
+- **Status Codes:**
+  - `201 Created` → Successfully created
+  - `400 Bad Request` → Invalid input
 
 #### **Request Body**
 ```json
@@ -105,7 +124,7 @@ https://localhost:7067/WeatherForecast
 }
 ```
 
-#### **Fout (400 Bad Request)**
+#### **Error (400 Bad Request)**
 ```json
 {
   "error": "Bad Request",
@@ -114,10 +133,10 @@ https://localhost:7067/WeatherForecast
 ```
 
 ### PUT `/api/environments/{id}` → Update an environment
-- **Statuscodes:**
-  - `200 OK` → Succesvol bijgewerkt
-  - `400 Bad Request` → Ongeldige invoer
-  - `404 Not Found` → Omgeving niet gevonden
+- **Status Codes:**
+  - `200 OK` → Successfully updated
+  - `400 Bad Request` → Invalid input
+  - `404 Not Found` → Environment not found
 
 #### **Request Body**
 ```json
@@ -139,9 +158,9 @@ https://localhost:7067/WeatherForecast
 ```
 
 ### DELETE `/api/environments/{id}` → Delete an environment
-- **Statuscodes:**
-  - `204 No Content` → Succesvol verwijderd
-  - `404 Not Found` → Omgeving niet gevonden
+- **Status Codes:**
+  - `204 No Content` → Successfully deleted
+  - `404 Not Found` → Environment not found
 
 #### **Response**
 ```json
@@ -151,10 +170,11 @@ https://localhost:7067/WeatherForecast
 ---
 
 ## Object Endpoints
+
 ### GET `/api/environments/{envId}/objects` → Get all objects in an environment
-- **Statuscodes:**
-  - `200 OK` → Objecten opgehaald
-  - `404 Not Found` → Omgeving niet gevonden
+- **Status Codes:**
+  - `200 OK` → Objects retrieved
+  - `404 Not Found` → Environment not found
 
 #### **Response**
 ```json
@@ -182,16 +202,17 @@ https://localhost:7067/WeatherForecast
 }
 ```
 
-- PUT /api/environments/{envId}/objects/{id} → Update een object
-- DELETE /api/environments/{envId}/objects/{id} → Verwijder een object
+### PUT `/api/environments/{envId}/objects/{id}` → Update an object
+### DELETE `/api/environments/{envId}/objects/{id}` → Delete an object
 
 ---
 
 ## User Endpoints
+
 ### POST `/api/users/register` → Register a new user
-- **Statuscodes:**
-  - `201 Created` → Gebruiker succesvol geregistreerd
-  - `400 Bad Request` → Ongeldige gegevens
+- **Status Codes:**
+  - `201 Created` → User successfully registered
+  - `400 Bad Request` → Invalid data
 
 #### **Request Body**
 ```json
@@ -209,7 +230,7 @@ https://localhost:7067/WeatherForecast
 }
 ```
 
-#### **Fout (400 Bad Request)**
+#### **Error (400 Bad Request)**
 ```json
 {
   "error": "Bad Request",
@@ -218,9 +239,9 @@ https://localhost:7067/WeatherForecast
 ```
 
 ### POST `/api/users/login` → Authenticate user
-- **Statuscodes:**
-  - `200 OK` → Inloggen geslaagd
-  - `401 Unauthorized` → Foutieve login
+- **Status Codes:**
+  - `200 OK` → Login successful
+  - `401 Unauthorized` → Invalid login
 
 #### **Request Body**
 ```json
@@ -238,11 +259,10 @@ https://localhost:7067/WeatherForecast
 }
 ```
 
-#### **Fout (401 Unauthorized)**
+#### **Error (401 Unauthorized)**
 ```json
 {
   "error": "Unauthorized",
   "message": "Invalid username or password."
 }
 ```
-

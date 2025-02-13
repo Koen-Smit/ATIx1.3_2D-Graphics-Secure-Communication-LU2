@@ -454,9 +454,6 @@
           "environment2D_Id": {
             "type": "integer",
             "format": "int32"
-          },
-          "environment": {
-            "$ref": "#/components/schemas/Environment2D"
           }
         },
         "additionalProperties": false
