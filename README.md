@@ -10,6 +10,7 @@
 **Considerations:**
 - What should the final state of the system be?
 - Which HTTP status code is appropriate?
+- Je kunt je voorstellen dat wanneer je 100 objecten wilt opslaan, het inefficiënt zou zijn om 100 afzonderlijke verzoeken naar de API te sturen. In plaats daarvan kun je de API zo ontwerpen dat deze een lijst met objecten accepteert om in één keer op te slaan. Dit vermindert het netwerkverkeer aanzienlijk.
 
 **Possible Outcomes:**
 - 99 objects saved
