@@ -109,16 +109,16 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
+    "ContainingType": "LU2_WebApi.Controllers.Object2DController",
+    "Method": "GetAll",
+    "RelativePath": "Object2D",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[LU2_WebApi.Models.WeatherForecast, LU2-WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Object2D, LU2-WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -126,36 +126,92 @@
         ],
         "StatusCode": 200
       }
-    ],
-    "EndpointName": "GetWeatherForecast"
+    ]
   },
   {
-    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
-    "Method": "Post",
-    "RelativePath": "WeatherForecast",
+    "ContainingType": "LU2_WebApi.Controllers.Object2DController",
+    "Method": "Create",
+    "RelativePath": "Object2D",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "forecast",
-        "Type": "LU2_WebApi.Models.WeatherForecast",
+        "Name": "object2D",
+        "Type": "Object2D",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Object2D",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Object2DController",
+    "Method": "GetById",
+    "RelativePath": "Object2D/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Object2D",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LU2_WebApi.Controllers.Object2DController",
+    "Method": "Update",
+    "RelativePath": "Object2D/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedObject2D",
+        "Type": "Object2D",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "LU2_WebApi.Controllers.WeatherForecastController",
-    "Method": "GetByDate",
-    "RelativePath": "WeatherForecast/{date}",
-    "HttpMethod": "GET",
+    "ContainingType": "LU2_WebApi.Controllers.Object2DController",
+    "Method": "Delete",
+    "RelativePath": "Object2D/{id}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "date",
-        "Type": "System.DateOnly",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

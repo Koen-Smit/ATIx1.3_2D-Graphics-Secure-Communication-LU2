@@ -1,5 +1,24 @@
 # ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2
 
+# Create db
+
+- connect to localdb:
+Server name: (localdb)\MSSQLLocalDB<br>
+Authentication: Windows Authentication<br>
+- Right-click "databases" and choose: 'New database'
+- use db.sql script in this repo to create db
+
+
+# Db usage
+- Object-Relational-Mappingframework(ORM)
+- Dapper, waarom? - lichtgewicht & snel, nogsteeds queries dus nuttig voor vaardigheid evt.
+
+### user secrets:
+- dotnet user-secrets init 
+- dotnet user-secrets set "SqlConnectionString" "(your connectionstringhere)
+- (Server=(localdb)\\MSSQLLocalDB;Database=;Integrated Security=True;)
+
+
 
 # Create webapi
 dotnet new webapi --use-controllers -n LU2-WebApi

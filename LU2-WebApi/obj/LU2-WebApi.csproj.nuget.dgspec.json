@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj": {}
+    "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj": {
+    "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
         "projectName": "LU2-WebApi",
-        "projectPath": "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
-        "packagesPath": "C:\\Users\\koens\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\koens\\Documents\\Avans\\Projecten\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\obj\\",
+        "projectPath": "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
+        "packagesPath": "C:\\Users\\Dhr Smit\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\koens\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dhr Smit\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,9 +50,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.66, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.1, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
