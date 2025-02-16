@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "z+RYRzttcgE=",
+  "dgSpecHash": "2LgK4dhd4zY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
+  "projectFilePath": "C:\\Users\\Dhr Smit\\Documents\\Programming\\Projects\\project folder\\ATIx-ICT-1.3-LU2\\LU2-WebApi\\LU2-WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dhr Smit\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Dhr Smit\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
