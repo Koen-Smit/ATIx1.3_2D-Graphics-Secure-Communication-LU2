@@ -52,3 +52,67 @@ Mkfile.old
 dkms.conf
 
 .vs
+
+# .NET build directories
+bin/
+obj/
+
+# User-specific files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows image file formats
+*.ico
+
+# Windows Installer and Windows app files
+*.appx
+*.appxsym
+
+# JetBrains Rider
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User secrets file (sensitive information, do not commit)
+secrets.json
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+[Dd]eploy/
+[Dd]eployable/
+
+# Test Results
+TestResults/
+
+# ASP.NET Core
+wwwroot/
+
+# dotnet publish folder
+publish/
+
+# Maven wrapper folder
+.mvn/
+
+# Coverage reports
+coverage/
+
+# Other build files
+*.log
+*.bak
+*.swp
+*.swo
+*.pid
