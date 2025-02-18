@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LU2-WebApi", "LU2-WebApi\LU2-WebApi.csproj", "{1B1E2F96-048B-4784-9556-B87490625AC1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LU2-WebApi.Tests", "LU2-WebApi.Tests\LU2-WebApi.Tests.csproj", "{98169009-E90E-4651-AA6E-33D408841E81}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1B1E2F96-048B-4784-9556-B87490625AC1} = {1B1E2F96-048B-4784-9556-B87490625AC1}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

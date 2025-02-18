@@ -50,8 +50,10 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
     {
         try
         {
+            if (entity == null)
+                return new BadRequestObjectResult("Entity cannot be null");
             if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+                return BadRequest(ModelState);
 
             var createdEntity = await _repository.AddAsync(entity);
             if (createdEntity == null)
