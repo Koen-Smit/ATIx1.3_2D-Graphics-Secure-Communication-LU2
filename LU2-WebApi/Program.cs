@@ -4,10 +4,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("SqlConnectionString")
+var connectionString = builder.Configuration["SqlConnectionString"]
     ?? throw new InvalidOperationException("Connection string is missing");
 
-builder.Services.AddSingleton(connectionString);
+builder.Services.AddSingleton(connectionString!);
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -18,6 +18,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGet("/", () => "API is up");
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

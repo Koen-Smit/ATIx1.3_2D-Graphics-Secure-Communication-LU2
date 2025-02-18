@@ -190,6 +190,25 @@
         }
       }
     },
+    "/": {
+      "get": {
+        "tags": [
+          "LU2-WebApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Object2D": {
       "get": {
         "tags": [
