@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LU2-WebApi", "LU2-WebApi\LU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LU2-WebApi.Tests", "LU2-WebApi.Tests\LU2-WebApi.Tests.csproj", "{98169009-E90E-4651-AA6E-33D408841E81}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordHasher", "PasswordHasher\PasswordHasher.csproj", "{44F225F1-F602-43A7-ACDC-133A20422540}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{98169009-E90E-4651-AA6E-33D408841E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98169009-E90E-4651-AA6E-33D408841E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98169009-E90E-4651-AA6E-33D408841E81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F225F1-F602-43A7-ACDC-133A20422540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F225F1-F602-43A7-ACDC-133A20422540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F225F1-F602-43A7-ACDC-133A20422540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F225F1-F602-43A7-ACDC-133A20422540}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

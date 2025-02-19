@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public abstract class BaseApiController<T> : ControllerBase where T : class
@@ -11,7 +13,8 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
         _repository = repository;
     }
 
-    // GET: /{Entity}
+    // GET: /{Entity} - Alleen gebruikers met de "entity:read" claim
+    [Authorize(Policy = "CanReadEntity")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<T>>> GetAll()
     {
@@ -26,7 +29,8 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
         }
     }
 
-    // GET: /{Entity}/{id}
+    // GET: /{Entity}/{id} - Alleen gebruikers met de "entity:read" claim
+    [Authorize(Policy = "CanReadEntity")]
     [HttpGet("{id}")]
     public async Task<ActionResult<T>> GetById(int id)
     {
@@ -44,7 +48,8 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
         }
     }
 
-    // POST: /{Entity}
+    // POST: /{Entity} - Alleen gebruikers met "entity:write" claim of role "Admin"
+    [Authorize(Policy = "CanWriteEntity")]
     [HttpPost]
     public async Task<ActionResult<T>> Create([FromBody] T entity)
     {
@@ -69,7 +74,8 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
         }
     }
 
-    // PUT: /{Entity}/{id}
+    // PUT: /{Entity}/{id} - Alleen gebruikers met "entity:write" claim of role "Admin"
+    [Authorize(Policy = "CanWriteEntity")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] T updatedEntity)
     {
@@ -93,7 +99,8 @@ public abstract class BaseApiController<T> : ControllerBase where T : class
         }
     }
 
-    // DELETE: /{Entity}/{id}
+    // DELETE: /{Entity}/{id} - Alleen gebruikers met "entity:delete" claim of role "Admin"
+    [Authorize(Policy = "CanDeleteEntity")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
