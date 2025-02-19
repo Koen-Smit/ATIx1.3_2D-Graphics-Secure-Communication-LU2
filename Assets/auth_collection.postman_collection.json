@@ -1,0 +1,3318 @@
+{
+	"info": {
+		"_postman_id": "a6197717-5a63-4358-aaa0-a30a908327a2",
+		"name": "auth_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42398459"
+	},
+	"item": [
+		{
+			"name": "Autorisatie_checks",
+			"item": [
+				{
+					"name": "User_rights",
+					"item": [
+						{
+							"name": "Login",
+							"item": [
+								{
+									"name": "Login_path",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"// Retrieve the stored email and password variables\r",
+													"var email = pm.environment.get(\"email\");\r",
+													"var password = pm.environment.get(\"password\");\r",
+													"\r",
+													"if (!email || !password) {\r",
+													"    console.log(\"Error: Email or Password is missing.\");\r",
+													"    pm.test(\"Email and Password must be present\", function() {\r",
+													"        pm.expect(email).to.not.be.empty;\r",
+													"        pm.expect(password).to.not.be.empty;\r",
+													"    });\r",
+													"} else {\r",
+													"    // Proceed with further logic\r",
+													"    console.log(\"Both Email and Password are set\");\r",
+													"}\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"if (jsonData.accessToken) {\r",
+													"    pm.environment.set(\"access_token\", jsonData.accessToken);\r",
+													"    console.log(\"Access Token: \" + jsonData.accessToken);\r",
+													"} else {\r",
+													"    console.log(\"No access token found in response\");\r",
+													"}\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"// if no environment the collection vars can be manipulated -->\r",
+													"// pm.collectionVariables.set(\"access_token\", jsonData.accessToken);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"USER@EXAMPLE.COM\",\r\n    \"password\": \"//\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/login",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Item_checks",
+							"item": [
+								{
+									"name": "Environment2D",
+									"item": [
+										{
+											"name": "Maak Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let responseData = pm.response.json();\r",
+															"let createdEnvironmentId = responseData.id;\r",
+															"\r",
+															"pm.environment.set(\"createdEnvironmentId\", createdEnvironmentId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"// Generate random integer between 1 and 1000\r",
+															"const randomInteger = Math.floor(Math.random() * 1000) + 1;"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 0,\n  \"name\": \"string\",\n  \"maxLength\": 10000,\n  \"maxHeight\": 10000\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json"
+															},
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}",
+															"options": {
+																"raw": {
+																	"headerFamily": "json",
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D"
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal Environment2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Update Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"id\": {{createdEnvironmentId}},\r\n  \"name\": \"updated string\",\r\n  \"maxLength\": 10000,\r\n  \"maxHeight\": 10000\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Object2D",
+									"item": [
+										{
+											"name": "Maak nieuw Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															"\r",
+															"let responseData = pm.response.json();\r",
+															"let createdObjectId = responseData.id;\r",
+															"\r",
+															"pm.collectionVariables.set(\"createdObjectId\", createdObjectId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \"id\": \"{{$randomInt}}\", \"name\": \"TestObject_{{$timestamp}}\", \"environment2D_Id\": {{createdEnvironmentId}} }"
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Haal Object2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Update Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \r\n    \"id\": \"{{createdObjectId}}\", \r\n    \"name\": \"Updated_TestObject_{{$timestamp}}\", \r\n    \"environment2D_Id\": {{createdEnvironmentId}} \r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Remove_testcases",
+									"item": [
+										{
+											"name": "Verwijder Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Verwijder Environment",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Logout",
+							"item": [
+								{
+									"name": "Logout",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "\"string\"",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/logout",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"logout"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Manager_rights",
+					"item": [
+						{
+							"name": "Login",
+							"item": [
+								{
+									"name": "Login_path",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"// Retrieve the stored email and password variables\r",
+													"var email = pm.environment.get(\"email\");\r",
+													"var password = pm.environment.get(\"password\");\r",
+													"\r",
+													"if (!email || !password) {\r",
+													"    console.log(\"Error: Email or Password is missing.\");\r",
+													"    pm.test(\"Email and Password must be present\", function() {\r",
+													"        pm.expect(email).to.not.be.empty;\r",
+													"        pm.expect(password).to.not.be.empty;\r",
+													"    });\r",
+													"} else {\r",
+													"    // Proceed with further logic\r",
+													"    console.log(\"Both Email and Password are set\");\r",
+													"}\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"if (jsonData.accessToken) {\r",
+													"    pm.environment.set(\"access_token\", jsonData.accessToken);\r",
+													"    console.log(\"Access Token: \" + jsonData.accessToken);\r",
+													"} else {\r",
+													"    console.log(\"No access token found in response\");\r",
+													"}\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"// if no environment the collection vars can be manipulated -->\r",
+													"// pm.collectionVariables.set(\"access_token\", jsonData.accessToken);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"MANAGER@EXAMPLE.COM\",\r\n    \"password\": \"//\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/login",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Item_checks",
+							"item": [
+								{
+									"name": "Environment2D",
+									"item": [
+										{
+											"name": "Maak Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let responseData = pm.response.json();\r",
+															"let createdEnvironmentId = responseData.id;\r",
+															"\r",
+															"pm.environment.set(\"createdEnvironmentId\", createdEnvironmentId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"// Generate random integer between 1 and 1000\r",
+															"const randomInteger = Math.floor(Math.random() * 1000) + 1;"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 0,\n  \"name\": \"string\",\n  \"maxLength\": 10000,\n  \"maxHeight\": 10000\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json"
+															},
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}",
+															"options": {
+																"raw": {
+																	"headerFamily": "json",
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D"
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal Environment2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Update Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"id\": {{createdEnvironmentId}},\r\n  \"name\": \"updated string\",\r\n  \"maxLength\": 10000,\r\n  \"maxHeight\": 10000\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Object2D",
+									"item": [
+										{
+											"name": "Maak nieuw Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															"\r",
+															"let responseData = pm.response.json();\r",
+															"let createdObjectId = responseData.id;\r",
+															"\r",
+															"pm.collectionVariables.set(\"createdObjectId\", createdObjectId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \"id\": \"{{$randomInt}}\", \"name\": \"TestObject_{{$timestamp}}\", \"environment2D_Id\": {{createdEnvironmentId}} }"
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Haal Object2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Update Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \r\n    \"id\": \"{{createdObjectId}}\", \r\n    \"name\": \"Updated_TestObject_{{$timestamp}}\", \r\n    \"environment2D_Id\": {{createdEnvironmentId}} \r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Remove_testcases",
+									"item": [
+										{
+											"name": "Verwijder Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Verwijder Environment",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Logout",
+							"item": [
+								{
+									"name": "Logout",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "\"string\"",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/logout",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"logout"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Admin_rights",
+					"item": [
+						{
+							"name": "Login",
+							"item": [
+								{
+									"name": "Login_path",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"// Retrieve the stored email and password variables\r",
+													"var email = pm.environment.get(\"email\");\r",
+													"var password = pm.environment.get(\"password\");\r",
+													"\r",
+													"if (!email || !password) {\r",
+													"    console.log(\"Error: Email or Password is missing.\");\r",
+													"    pm.test(\"Email and Password must be present\", function() {\r",
+													"        pm.expect(email).to.not.be.empty;\r",
+													"        pm.expect(password).to.not.be.empty;\r",
+													"    });\r",
+													"} else {\r",
+													"    // Proceed with further logic\r",
+													"    console.log(\"Both Email and Password are set\");\r",
+													"}\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"if (jsonData.accessToken) {\r",
+													"    pm.environment.set(\"access_token\", jsonData.accessToken);\r",
+													"    console.log(\"Access Token: \" + jsonData.accessToken);\r",
+													"} else {\r",
+													"    console.log(\"No access token found in response\");\r",
+													"}\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"\r",
+													"// if no environment the collection vars can be manipulated -->\r",
+													"// pm.collectionVariables.set(\"access_token\", jsonData.accessToken);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ADMIN@EXAMPLE.COM\",\r\n    \"password\": \"//\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/login",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Item_checks",
+							"item": [
+								{
+									"name": "Environment2D",
+									"item": [
+										{
+											"name": "Maak Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let responseData = pm.response.json();\r",
+															"let createdEnvironmentId = responseData.id;\r",
+															"\r",
+															"pm.environment.set(\"createdEnvironmentId\", createdEnvironmentId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"// Generate random integer between 1 and 1000\r",
+															"const randomInteger = Math.floor(Math.random() * 1000) + 1;"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 0,\n  \"name\": \"string\",\n  \"maxLength\": 10000,\n  \"maxHeight\": 10000\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json"
+															},
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}",
+															"options": {
+																"raw": {
+																	"headerFamily": "json",
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D"
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal Environment2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Update Environment2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"id\": {{createdEnvironmentId}},\r\n  \"name\": \"updated string\",\r\n  \"maxLength\": 10000,\r\n  \"maxHeight\": 10000\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Object2D",
+									"item": [
+										{
+											"name": "Maak nieuw Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+															"\r",
+															"let responseData = pm.response.json();\r",
+															"let createdObjectId = responseData.id;\r",
+															"\r",
+															"pm.collectionVariables.set(\"createdObjectId\", createdObjectId);\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \"id\": \"{{$randomInt}}\", \"name\": \"TestObject_{{$timestamp}}\", \"environment2D_Id\": {{createdEnvironmentId}} }"
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Haal Object2D op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Update Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{ \r\n    \"id\": \"{{createdObjectId}}\", \r\n    \"name\": \"Updated_TestObject_{{$timestamp}}\", \r\n    \"environment2D_Id\": {{createdEnvironmentId}} \r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "text/plain"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+												}
+											]
+										},
+										{
+											"name": "Haal opnieuw op",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Remove_testcases",
+									"item": [
+										{
+											"name": "Verwijder Object2D",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Object2D",
+														"{{createdObjectId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Verwijder Environment",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+													"host": [
+														"{{base_url_domain}}"
+													],
+													"path": [
+														"Environment2D",
+														"{{createdEnvironmentId}}"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/Environment2D/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"Environment2D",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Logout",
+							"item": [
+								{
+									"name": "Logout",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "\"string\"",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_auth}}/logout",
+											"host": [
+												"{{base_url_auth}}"
+											],
+											"path": [
+												"logout"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "db_checks",
+			"item": [
+				{
+					"name": "Register / Login",
+					"item": [
+						{
+							"name": "Register_path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Function to generate a random password\r",
+											"function generateRandomPassword(length) {\r",
+											"    var charset = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()\";\r",
+											"    var password = \"\";\r",
+											"    for (var i = 0; i < length; i++) {\r",
+											"        var randomIndex = Math.floor(Math.random() * charset.length);\r",
+											"        password += charset[randomIndex];\r",
+											"    }\r",
+											"    return password;\r",
+											"}\r",
+											"\r",
+											"// Generate random email and password\r",
+											"var randomNumber = Math.floor(Math.random() * 100000);\r",
+											"var email = randomNumber + \"@email.com\";\r",
+											"var password = generateRandomPassword(16);\r",
+											"\r",
+											"// Set variables in Postman\r",
+											"pm.environment.set(\"email\", email);\r",
+											"pm.environment.set(\"password\", password);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_auth}}/register",
+									"host": [
+										"{{base_url_auth}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login_path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Retrieve the stored email and password variables\r",
+											"var email = pm.environment.get(\"email\");\r",
+											"var password = pm.environment.get(\"password\");\r",
+											"\r",
+											"if (!email || !password) {\r",
+											"    console.log(\"Error: Email or Password is missing.\");\r",
+											"    pm.test(\"Email and Password must be present\", function() {\r",
+											"        pm.expect(email).to.not.be.empty;\r",
+											"        pm.expect(password).to.not.be.empty;\r",
+											"    });\r",
+											"} else {\r",
+											"    // Proceed with further logic\r",
+											"    console.log(\"Both Email and Password are set\");\r",
+											"}\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"if (jsonData.accessToken) {\r",
+											"    pm.environment.set(\"access_token\", jsonData.accessToken);\r",
+											"    console.log(\"Access Token: \" + jsonData.accessToken);\r",
+											"} else {\r",
+											"    console.log(\"No access token found in response\");\r",
+											"}\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"// if no environment the collection vars can be manipulated -->\r",
+											"// pm.collectionVariables.set(\"access_token\", jsonData.accessToken);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_auth}}/login",
+									"host": [
+										"{{base_url_auth}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\"string\"",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_auth}}/logout",
+									"host": [
+										"{{base_url_auth}}"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Item_checks",
+					"item": [
+						{
+							"name": "Environment2D",
+							"item": [
+								{
+									"name": "Maak Environment2D",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let responseData = pm.response.json();\r",
+													"let createdEnvironmentId = responseData.id;\r",
+													"\r",
+													"pm.environment.set(\"createdEnvironmentId\", createdEnvironmentId);\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"// Generate random integer between 1 and 1000\r",
+													"const randomInteger = Math.floor(Math.random() * 1000) + 1;"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 0,\n  \"name\": \"string\",\n  \"maxLength\": 10000,\n  \"maxHeight\": 10000\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Environment2D",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Environment2D"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+										}
+									]
+								},
+								{
+									"name": "Haal Environment2D op",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Environment2D",
+												"{{createdEnvironmentId}}"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+										}
+									]
+								},
+								{
+									"name": "Update Environment2D",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": {{createdEnvironmentId}},\r\n  \"name\": \"updated string\",\r\n  \"maxLength\": 10000,\r\n  \"maxHeight\": 10000\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Environment2D",
+												"{{createdEnvironmentId}}"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+										}
+									]
+								},
+								{
+									"name": "Haal opnieuw op",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Environment2D",
+												"{{createdEnvironmentId}}"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Object2D",
+							"item": [
+								{
+									"name": "Maak nieuw Object2D",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");\r",
+													"\r",
+													"let responseData = pm.response.json();\r",
+													"let createdObjectId = responseData.id;\r",
+													"\r",
+													"pm.collectionVariables.set(\"createdObjectId\", createdObjectId);\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \"id\": \"{{$randomInt}}\", \"name\": \"TestObject_{{$timestamp}}\", \"environment2D_Id\": {{createdEnvironmentId}} }"
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Object2D",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Object2D"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Haal Object2D op",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Object2D",
+												"{{createdObjectId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Object2D",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \r\n    \"id\": \"{{createdObjectId}}\", \r\n    \"name\": \"Updated_TestObject_{{$timestamp}}\", \r\n    \"environment2D_Id\": {{createdEnvironmentId}} \r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Object2D",
+												"{{createdObjectId}}"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"maxHeight\": \"<integer>\",\n  \"maxLength\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"id\": \"<integer>\"\n}"
+										}
+									]
+								},
+								{
+									"name": "Haal opnieuw op",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Object2D",
+												"{{createdObjectId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Remove_testcases",
+							"item": [
+								{
+									"name": "Verwijder Object2D",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdObjectId = pm.collectionVariables.get(\"createdObjectId\");\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url_domain}}/Object2D/{{createdObjectId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Object2D",
+												"{{createdObjectId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Verwijder Environment",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let createdEnvironmentId = pm.collectionVariables.get(\"createdEnvironmentId\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url_domain}}/Environment2D/{{createdEnvironmentId}}",
+											"host": [
+												"{{base_url_domain}}"
+											],
+											"path": [
+												"Environment2D",
+												"{{createdEnvironmentId}}"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/Environment2D/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Environment2D",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "createdObjectId",
+			"value": ""
+		}
+	]
+}
