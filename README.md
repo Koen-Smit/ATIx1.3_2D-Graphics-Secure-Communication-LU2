@@ -49,6 +49,124 @@ Access the API:
 
 ---
 
+
+
+# API Documentation
+#### Authentication & Authorization:
+This API uses JWT-based authentication, Some endpoints require specific roles and claims.
+
+## Account Management
+### Add a Claim to a User
+- **Endpoint:** `POST /account/AccountManagement/{id}/{claim}/{value}`
+- **Permissions:**Requires ManageAccount permission
+- **Allowed Role:** Admin
+
+## Environment2D
+
+### Get All Environment2D Objects
+- **Endpoint:** `GET /Environment2D`
+- **Permissions:** Requires Read permission
+
+### Create a New Environment2D Object
+- **Endpoint:** `POST /Environment2D`
+- **Permissions:** Requires Write permission
+
+### Get Environment2D Object by ID
+- **Endpoint:** `GET /Environment2D/{id}`
+- **Permissions:** Requires Read permission
+
+### Update an Environment2D Object
+- **Endpoint:** `PUT /Environment2D/{id}`
+- **Permissions:** Requires Write permission
+
+### Delete an Environment2D Object
+- **Endpoint:** `DELETE /Environment2D/{id}`
+- **Permissions:** Requires Delete permission
+- **Allowed Role:** Admin
+
+## LU2-WebApi (Authentication & User Management)
+
+### Register a New User
+- **Endpoint:** `POST /account/register`
+- **Permissions:** Public (No authentication required)
+
+### Login
+- **Endpoint:** `POST /account/login`
+- **Permissions:** Public (Requires valid user credentials)
+
+### Refresh Token
+- **Endpoint:** `POST /account/refresh`
+- **Permissions:** Requires a valid refresh token
+
+### Confirm Email
+- **Endpoint:** `GET /account/confirmEmail`
+- **Permissions:** Public (Requires valid email confirmation token)
+
+### Resend Confirmation Email
+- **Endpoint:** `POST /account/resendConfirmationEmail`
+- **Permissions:** Public (Requires valid user credentials)
+
+### Forgot Password
+- **Endpoint:** `POST /account/forgotPassword`
+- **Permissions:** Public
+
+### Reset Password
+- **Endpoint:** `POST /account/resetPassword`
+- **Permissions:** Public (Requires valid reset token)
+
+### Manage Two-Factor Authentication (2FA)
+- **Endpoint:** `POST /account/manage/2fa`
+- **Permissions:** Requires User role
+
+### Get User Account Info
+- **Endpoint:** `GET /account/manage/info`
+- **Permissions:** Requires User role
+
+### Update User Account Info
+- **Endpoint:** `POST /account/manage/info`
+- **Permissions:** Requires User role
+
+### Logout
+- **Endpoint:** `POST /account/logout`
+- **Permissions:** Requires authentication
+
+## Debugging
+
+### Get User Claims (Debugging)
+- **Endpoint:** `GET /debug/claims`
+- **Permissions:** Requires Admin role
+
+## API Health Check
+
+### Health Check
+- **Endpoint:** `GET /`
+- **Permissions:** Public (No authentication required)
+
+## Object2D
+
+### Get All Object2D Items
+- **Endpoint:** `GET /Object2D`
+- **Permissions:** Requires Read permission
+
+### Create a New Object2D Item
+- **Endpoint:** `POST /Object2D`
+- **Permissions:** Requires Write permission
+
+### Get Object2D Item by ID
+- **Endpoint:** `GET /Object2D/{id}`
+- **Permissions:** Requires Read permission
+
+### Update an Object2D Item
+- **Endpoint:** `PUT /Object2D/{id}`
+- **Permissions:** Requires Write permission
+
+### Delete an Object2D Item
+- **Endpoint:** `DELETE /Object2D/{id}`
+- **Permissions:** Requires Delete permission
+- **Allowed Role:** Admin
+
+
+
 # API Endpoints & Responses
 
 ## Environment Endpoints
