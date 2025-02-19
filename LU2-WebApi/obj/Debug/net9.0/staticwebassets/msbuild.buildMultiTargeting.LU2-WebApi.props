@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\LU2-WebApi.props" />
-</Project>
