@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ExampleApp : MonoBehaviour
@@ -13,6 +14,12 @@ public class ExampleApp : MonoBehaviour
     public UserApiClient userApiClient;
     public Environment2DApiClient enviroment2DApiClient;
     public Object2DApiClient object2DApiClient;
+
+
+    [Header("UI Elements")]
+    public TextMeshProUGUI environmentListText;
+    public TextMeshProUGUI objectListText;
+
 
     #region Login
 
@@ -68,18 +75,17 @@ public class ExampleApp : MonoBehaviour
         switch (webRequestResponse)
         {
             case WebRequestData<List<Environment2D>> dataResponse:
-                List<Environment2D> environment2Ds = dataResponse.Data;
-                Debug.Log("List of environment2Ds: ");
-                environment2Ds.ForEach(environment2D => Debug.Log(environment2D.id));
-                // TODO: Handle succes scenario.
+                environmentListText.text = "Environment IDs:\n";
+                foreach (var env in dataResponse.Data)
+                {
+                    environmentListText.text += "- " + env.id + "\n";
+                }
+                Debug.Log("Fetched environment list successfully.");
                 break;
             case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Read environment2Ds error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
+                environmentListText.text = "❌ Error fetching environments: " + errorResponse.ErrorMessage;
+                Debug.Log("Read environment2Ds error: " + errorResponse.ErrorMessage);
                 break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
 
@@ -92,15 +98,11 @@ public class ExampleApp : MonoBehaviour
         {
             case WebRequestData<Environment2D> dataResponse:
                 environment2D.id = dataResponse.Data.id;
-                // TODO: Handle succes scenario.
+                ReadEnvironment2Ds(); // Refresh the list
                 break;
             case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Create environment2D error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
+                Debug.Log("Create environment2D error: " + errorResponse.ErrorMessage);
                 break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
 
@@ -137,18 +139,17 @@ public class ExampleApp : MonoBehaviour
         switch (webRequestResponse)
         {
             case WebRequestData<List<Object2DModel>> dataResponse:
-                List<Object2DModel> object2Ds = dataResponse.Data;
-                Debug.Log("List of object2Ds: " + object2Ds);
-                object2Ds.ForEach(object2D => Debug.Log(object2D.id));
-                // TODO: Succes scenario. Show the enviroments in the UI
+                objectListText.text = "Objects IDs:\n";
+                foreach (var obj in dataResponse.Data)
+                {
+                    objectListText.text += "- " + obj.id + "\n";
+                }
+                Debug.Log("Fetched object list successfully.");
                 break;
             case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Read object2Ds error: " + errorMessage);
-                // TODO: Error scenario. Show the errormessage to the user.
+                objectListText.text = "❌ Error fetching objects: " + errorResponse.ErrorMessage;
+                Debug.Log("Read object2Ds error: " + errorResponse.ErrorMessage);
                 break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
 
@@ -161,15 +162,11 @@ public class ExampleApp : MonoBehaviour
         {
             case WebRequestData<Object2DModel> dataResponse:
                 object2D.id = dataResponse.Data.id;
-                // TODO: Handle succes scenario.
+                ReadObject2Ds(); // Refresh the list
                 break;
             case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Create Object2D error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
+                Debug.Log("Create Object2D error: " + errorResponse.ErrorMessage);
                 break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
         }
     }
 
