@@ -439,8 +439,7 @@ Assets/**/ReflectionProbeData.asset
 # Ignore Unity's auto-generated YAML files
 Assets/StreamingAssets/*.manifest
 
-# Ignore Auto-generated meta files
-*.meta
+
 
 # Ignore ProBuilder backup files
 Assets/ProBuilderBackup/
