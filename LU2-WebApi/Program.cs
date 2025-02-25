@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +9,21 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration["SqlConnectionString"]
     ?? throw new InvalidOperationException("Connection string is missing");
 
-builder.Services.AddSingleton(connectionString!);
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddSingleton<IEnvironment2DRepository>(new Environment2DRepository(connectionString));
+builder.Services.AddSingleton<IAccountInfoRepository>(new AccountInfoRepository(connectionString));
+builder.Services.AddScoped<IAuthenticationService, AspNetIdentityAuthenticationService>();
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAuthorization();
 builder.Services
-    .AddIdentityApiEndpoints<IdentityUser>(options =>
+    .AddIdentity<AppUser, IdentityRole>(options =>
     {
-        options.User.RequireUniqueEmail = true;
+        options.User.RequireUniqueEmail = false;
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
+        options.Password.RequiredLength = 10;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireDigit = true;
+        options.Password.RequireNonAlphanumeric = true;
     })
     .AddDapperStores(options =>
     {
@@ -26,51 +32,87 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("AccessEntity", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "entity:read" && c.Value == "true") &&
+            context.User.HasClaim(c => c.Type == "entity:write" && c.Value == "true") &&
+            context.User.HasClaim(c => c.Type == "entity:delete" && c.Value == "true") ||
+            context.User.IsInRole("Admin")));
+
     options.AddPolicy("CanReadEntity", policy =>
-        policy.RequireClaim("entity:read", "true")); // Alleen gebruikers met deze claim mogen lezen
+        policy.RequireClaim("entity:read", "true"));
 
     options.AddPolicy("CanWriteEntity", policy =>
         policy.RequireAssertion(context =>
             context.User.HasClaim(c => c.Type == "entity:write" && c.Value == "true") ||
-            context.User.IsInRole("Admin"))); // Admin mag altijd schrijven
+            context.User.IsInRole("Admin")));
 
     options.AddPolicy("CanDeleteEntity", policy =>
         policy.RequireAssertion(context =>
             context.User.HasClaim(c => c.Type == "entity:delete" && c.Value == "true") ||
-            context.User.IsInRole("Admin"))); // Admin mag altijd verwijderen
-
-    options.AddPolicy("Level8WizardOnly", policy =>
-    {
-        policy.RequireClaim("wizard");
-        policy.RequireClaim("wizardLevel", "8");
-    });
+            context.User.IsInRole("Admin")));
 });
 
 var app = builder.Build();
 
-// Force HTTPS in production and redirect HTTP to HTTPS
 if (!app.Environment.IsDevelopment())
-{
     app.UseHsts();
-}
 
-app.UseHttpsRedirection(); // Redirect HTTP naar HTTPS
+app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup(prefix: "/account")
-    .MapIdentityApi<IdentityUser>();
+app.MapControllers();
 
-app.MapPost(pattern: "/account/logout",
-    async (SignInManager<IdentityUser> signInManager,
-    [FromBody] object empty) => {
-        if (empty != null)
-        {
-            await signInManager.SignOutAsync();
-            return Results.Ok();
-        }
-        return Results.Unauthorized();
-    })
-    .RequireAuthorization();
+app.MapPost("/account/register", async (AccountRequest request, UserManager<AppUser> userManager) =>
+{
+    if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 10)
+        return Results.BadRequest("Password does not meet the requirements.");
+
+    var existingUser = await userManager.FindByNameAsync(request.UserName);
+    if (existingUser != null)
+        return Results.BadRequest("Username is already in use.");
+
+    var user = new AppUser
+    {
+        UserName = request.UserName
+    };
+
+    var result = await userManager.CreateAsync(user, request.Password);
+    if (!result.Succeeded)
+        return Results.BadRequest(result.Errors);
+
+    var claimResult = await userManager.AddClaimAsync(user, new System.Security.Claims.Claim("entity:read", "true"));
+    if (!claimResult.Succeeded)
+        return Results.BadRequest(claimResult.Errors);
+
+    return Results.Ok("Registration successful!");
+});
+
+app.MapPost("/account/login", async (LoginRequest request, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager) =>
+{
+    if (signInManager.Context.User.Identity.IsAuthenticated)
+        return Results.BadRequest("User is already logged in.");
+
+    if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
+        return Results.BadRequest("Username and password must be provided.");
+
+    var user = await userManager.FindByNameAsync(request.UserName);
+    if (user == null)
+        return Results.BadRequest("Invalid username or password.");
+
+    var result = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+    if (!result.Succeeded)
+        return Results.BadRequest("Invalid username or password.");
+
+    return Results.Ok("Login successful!");
+});
+
+app.MapPost("/account/logout", async (SignInManager<AppUser> signInManager) =>
+{
+    await signInManager.SignOutAsync();
+    return Results.Ok();
+}).RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -78,18 +120,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers()
-    .RequireAuthorization();
-
-app.MapGet("/debug/claims", (HttpContext httpContext) =>
-{
-    var claims = httpContext.User.Claims
-        .Select(c => new { c.Type, c.Value })
-        .ToList();
-
-    return claims.Any() ? Results.Json(claims) : Results.Unauthorized();
-}).RequireAuthorization();
-
 app.MapGet("/", () => "API is up");
-
 app.Run();
