@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration["SqlConnectionString"]
     ?? throw new InvalidOperationException("Connection string is missing");
 
+//
 builder.Services.AddSingleton<IEnvironment2DRepository>(new Environment2DRepository(connectionString));
 builder.Services.AddSingleton<IAccountInfoRepository>(new AccountInfoRepository(connectionString));
 builder.Services.AddScoped<IAuthenticationService, AspNetIdentityAuthenticationService>();
