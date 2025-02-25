@@ -385,3 +385,137 @@ This API uses JWT-based authentication, Some endpoints require specific roles an
   "message": "Invalid username or password."
 }
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+### GET `` → 
+- **Rights** ->
+- **Conditions** ->
+- **Status Codes:**
+  - `400` → 
+
+#### **Request Body**
+```json
+
+```
+
+
+# account-info
+### GET `https://localhost:7067/account-info/claims` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
+- **Status Codes:**
+  - `200` → Success
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+#### **Request Body**
+```json
+[
+  {
+    "id": 0,
+    "userId": "string",
+    "claimType": "string",
+    "claimValue": "string"
+  }
+]
+```
+### GET `https://localhost:7067/account-info/environments` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
+- **Status Codes:**
+  - `200` → Success
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+#### **Request Body**
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "string",
+    "maxLength": 0,
+    "maxHeight": 0,
+    "createdAt": "2025-02-24T23:17:12.141Z",
+    "updatedAt": "2025-02-24T23:17:12.141Z",
+    "environmentType": 0
+  }
+]
+```
+
+
+# environment2d
+### GET `https://localhost:7067/environment2d` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
+- **Status Codes:**
+  - `200` → Success
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+#### **Request Body**
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "string",
+    "maxLength": 0,
+    "maxHeight": 0,
+    "createdAt": "2025-02-24T23:17:12.141Z",
+    "updatedAt": "2025-02-24T23:17:12.141Z",
+    "environmentType": 0
+  }
+]
+```
+
+### POST `https://localhost:7067/environment2d` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> Naam moet uniek zijn per user, 1/25 karakters, max. 5 per user
+- **Status Codes:**
+  - `200` → Success
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+#### **Request Body**
+```json
+{
+  "name": "string",
+  "environmentType": 0
+}
+```
+
+### DELETE `https://localhost:7067/environment2d` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> environmentId, gebruiker moet ingelogd zijn om eigen wereld te verwijderen. anders niet.
+- **Status Codes:**
+  - `200` → Environment deleted successfully.
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+
+
+
+### POST `https://localhost:7067/environment2d` → 
+- **Rights** -> Ingelogd op eigen account + CanReadEntity
+- **Conditions** -> Naam moet uniek zijn per user, 1/25 karakters, max. 5 per user
+- **Status Codes:**
+  - `200` → Success
+  - `400` → Bad-request
+  - `403` → Forbidden
+
+#### **Request Body**
+```json
+{
+  "name": "string",
+  "environmentType": 0
+}
+```
