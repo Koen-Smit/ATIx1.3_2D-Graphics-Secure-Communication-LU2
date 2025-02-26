@@ -10,6 +10,9 @@ public static class Scopes
         services.AddScoped<IEntityRepository>(sp =>
             new EntityRepository(connectionString));
 
+        services.AddScoped<IShareRepository>(sp =>
+            new ShareRepository(connectionString));
+
         services.AddScoped<IAccountRepository>(sp =>
         {
             var userManager = sp.GetRequiredService<UserManager<AppUser>>();

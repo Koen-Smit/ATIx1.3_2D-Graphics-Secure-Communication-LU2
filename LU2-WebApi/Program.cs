@@ -12,7 +12,6 @@ builder.Services.AddScopes(connectionString);
 builder.Services.AddIdentity(connectionString);
 builder.Services.AddAuthorization();
 
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

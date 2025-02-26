@@ -30,6 +30,8 @@ public class Environment
     [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 
+    [Required]
+    [Range(1, 3, ErrorMessage = "Not a valid type.")]
     public int? EnvironmentType { get; set; }
 }
 
