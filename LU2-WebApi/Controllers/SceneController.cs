@@ -157,7 +157,7 @@ public class SceneController : ControllerBase
     // GET: /scene/{environmentId}/entities
     [HttpGet("{environmentId}/entities")]
     [Authorize(Policy = "CanReadEntity")]
-    public async Task<ActionResult<IEnumerable<Entity>>> GetAllEntitys(Guid environmentId)
+    public async Task<ActionResult<IEnumerable<Entity>>> GetAllEntities(Guid environmentId)
     {
         try
         {
@@ -169,16 +169,16 @@ public class SceneController : ControllerBase
             if (environment == null)
                 return NotFound("Environment not found or does not belong to the user.");
 
-            var entitys = await _entityRepository.GetEntitiesFromEnvironment(environmentId);
+            var entities = await _entityRepository.GetEntitiesFromEnvironment(environmentId);
 
-            if (entitys == null || !entitys.Any())
-                return NotFound("No entitys found for this environment.");
+            if (entities == null || !entities.Any())
+                return NotFound("No entities found for this environment.");
 
-            return Ok(entitys);
+            return Ok(entities);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"An error occurred while fetching entitys: {ex.Message}");
+            return StatusCode(500, $"An error occurred while fetching entities: {ex.Message}");
         }
     }
 
@@ -199,7 +199,7 @@ public class SceneController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"An error occurred while fetching the entitys: {ex.Message}");
+            return StatusCode(500, $"An error occurred while fetching the entities: {ex.Message}");
         }
     }
 
@@ -236,7 +236,7 @@ public class SceneController : ControllerBase
             if (result == 0)
                 return BadRequest("Failed to create Entity.");
 
-            return CreatedAtAction(nameof(GetAllEntitys), new { environmentId = newEntity.EnvironmentId }, newEntity);
+            return CreatedAtAction(nameof(GetAllEntities), new { environmentId = newEntity.EnvironmentId }, newEntity);
         }
         catch (Exception ex)
         {
