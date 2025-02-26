@@ -1,3 +1,5 @@
+using System.Threading.RateLimiting;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -11,6 +13,20 @@ var connectionString = builder.Configuration["SqlConnectionString"]
 builder.Services.AddScopes(connectionString);
 builder.Services.AddIdentity(connectionString);
 builder.Services.AddAuthorization();
+
+// Rate limiter: Max 5 requests, per 10 seconds
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            key => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromSeconds(10)
+            }
+        ));
+});
 
 var app = builder.Build();
 
@@ -33,7 +49,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-
+app.UseRateLimiter();
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
