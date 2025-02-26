@@ -29,6 +29,7 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
     context.Response.Headers.Append("Referrer-Policy", "no-referrer");
     context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'");
+    context.Response.Headers.TryAdd("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
     await next();
 });
 
