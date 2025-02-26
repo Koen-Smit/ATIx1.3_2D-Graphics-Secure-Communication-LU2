@@ -34,7 +34,8 @@ public class EnvironmentRepository : IEnvironmentRepository
         FROM dbo.Environment e
         LEFT JOIN dbo.Shares s ON e.Id = s.EnvironmentId
         LEFT JOIN auth.AspNetUsers u ON e.UserId = u.Id
-        WHERE (e.Id = @EnvironmentId AND e.UserId = @UserId) OR s.SharedUserId = @UserId";
+        WHERE (e.Id = @EnvironmentId AND e.UserId = @UserId) 
+        OR (s.EnvironmentId = @EnvironmentId AND s.SharedUserId = @UserId)";
 
         using var connection = await GetConnection();
         return await connection.QueryFirstOrDefaultAsync<Environment>(query, new { EnvironmentId = environmentId, UserId = userId });

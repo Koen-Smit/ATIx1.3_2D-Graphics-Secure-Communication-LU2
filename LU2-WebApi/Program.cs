@@ -17,9 +17,22 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
     app.UseHsts();
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Redirect all http requests to https
 app.UseAuthentication();
 app.UseAuthorization();
+
+//Security headers
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+    context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'");
+    await next();
+});
+
+
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
