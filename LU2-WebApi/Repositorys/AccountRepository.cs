@@ -40,24 +40,55 @@ public class AccountRepository : IAccountRepository
         return Result.Success("Registration successful!");
     }
 
-    public async Task<Result?> LoginUser(LoginRequest request)
+    public async Task<LoginResponse?> LoginUser(LoginRequest request)
     {
         if (_signInManager.Context.User?.Identity?.IsAuthenticated == true)
-            return Result.Failure("User is already logged in.");
+            return new LoginResponse
+            {
+                Message = "User is already logged in."
+            };
 
         if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
-            return Result.Failure("Username and password must be provided.");
+            return new LoginResponse
+            {
+                Message = "Username and password must be provided."
+            };
 
         var user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
-            return Result.Failure("Invalid username or password.");
-
+            return new LoginResponse
+            {
+                Message = "Invalid username or password."
+            };
         var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
         if (!result.Succeeded)
-            return Result.Failure("Invalid username or password.");
+            return new LoginResponse
+            {
+                Message = "Invalid username or password."
+            };
 
-        return Result.Success("Login successful!");
+        var tokenGenerator = new JwtTokenGenerator(_connectionString);
+        var token = tokenGenerator.GenerateToken(request.UserName);
+        return new LoginResponse
+        {
+            Message = "Login successful!",
+            Token = token
+        };
     }
+
+    // renew token for user after token expiration
+    public Task<LoginResponse?> RenewToken(string userName)
+    {
+        var tokenGenerator = new JwtTokenGenerator(_connectionString);
+        var token = tokenGenerator.GenerateToken(userName);
+        return Task.FromResult<LoginResponse?>(new LoginResponse
+        {
+            Message = "Token renewed!",
+            Token = token
+        });
+    }
+
+
 
     public async Task<Result?> LogoutUser()
     {

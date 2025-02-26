@@ -1,4 +1,4 @@
     public interface IAuthenticationService
     {
-        string? GetCurrentAuthenticatedUserId();
+    string? GetCurrentAuthenticatedUserId();
     }

@@ -41,17 +41,56 @@ public class AccountController : ControllerBase
     {
         try
         {
-            var result = await _accountInfoRepository.LoginUser(request);
-            if (result == null || !result.IsSuccess)
-                return BadRequest(result?.ErrorMessage ?? "An unknown error occurred.");
+            var loginResponse = await _accountInfoRepository.LoginUser(request);
 
-            return Ok(result.SuccessMessage);
+            if (loginResponse == null || string.IsNullOrEmpty(loginResponse.Token))
+                return BadRequest(loginResponse?.Message ?? "An unknown error occurred.");
+
+            return Ok(new
+            {
+                Message = loginResponse.Message,
+                Token = loginResponse.Token
+            });
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred during login: {ex.Message}");
         }
     }
+
+    [HttpPost("renew")]
+    public async Task<ActionResult> RenewToken()
+    {
+        try
+        {
+            var userIdString = _authenticationService.GetCurrentAuthenticatedUserId();
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+                return Unauthorized("User is not authenticated or invalid user ID.");
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return NotFound("User not found.");
+
+            var userName = await _accountInfoRepository.GetUserName(userId);
+
+            var token = await _accountInfoRepository.RenewToken(userName);
+
+            if (token == null || string.IsNullOrEmpty(token.Token))
+                return BadRequest(token?.Message ?? "An unknown error occurred.");
+
+            return Ok(new
+            {
+                Message = "Token renewed successfully.",
+                Token = token
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred during token renewal: {ex.Message}");
+        }
+    }
+
+
 
     // POST: /account/logout
     [HttpPost("logout")]
