@@ -30,13 +30,16 @@ public class EnvironmentRepository : IEnvironmentRepository
     public async Task<Environment?> GetEnvironmentById(Guid environmentId, Guid userId)
     {
         const string query = @"
-            SELECT Id, Name, MaxLength, MaxHeight, CreatedAt, UpdatedAt, CAST(UserId AS UNIQUEIDENTIFIER) AS UserId, EnvironmentType
-            FROM dbo.Environment 
-            WHERE Id = @EnvironmentId AND UserId = @UserId";
+        SELECT e.Id, e.Name, e.MaxLength, e.MaxHeight, e.CreatedAt, e.UpdatedAt, e.EnvironmentType, u.UserName AS OriginalUserName
+        FROM dbo.Environment e
+        LEFT JOIN dbo.Shares s ON e.Id = s.EnvironmentId
+        LEFT JOIN auth.AspNetUsers u ON e.UserId = u.Id
+        WHERE (e.Id = @EnvironmentId AND e.UserId = @UserId) OR s.SharedUserId = @UserId";
 
         using var connection = await GetConnection();
         return await connection.QueryFirstOrDefaultAsync<Environment>(query, new { EnvironmentId = environmentId, UserId = userId });
     }
+
 
     public async Task<Result?> CreateEnvironment(Environment environment)
     {

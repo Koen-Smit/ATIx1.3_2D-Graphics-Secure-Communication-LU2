@@ -33,6 +33,7 @@ public class Environment
     [Required]
     [Range(1, 3, ErrorMessage = "Not a valid type.")]
     public int? EnvironmentType { get; set; }
+    public string OriginalUserName { get; internal set; }
 }
 
 public class EnvironmentDTO
@@ -44,6 +45,7 @@ public class EnvironmentDTO
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public int? EnvironmentType { get; set; }
+    public string OriginalUserName { get; set; } = string.Empty;
 }
 
 public class EnvironmentRequest

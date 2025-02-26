@@ -22,9 +22,9 @@ public class EntityRepository : IEntityRepository
     public async Task<IEnumerable<Entity?>> GetEntitiesFromEnvironment(Guid environmentId)
     {
         const string query = @"
-            SELECT Id, Prefab_Id, PositionX, PositionY, ScaleX, ScaleY, RotationZ, SortingLayer, EnvironmentId, CreatedAt, UpdatedAt
-            FROM Entity
-            WHERE EnvironmentId = @EnvironmentId";
+        SELECT Id, Prefab_Id, PositionX, PositionY, ScaleX, ScaleY, RotationZ, SortingLayer, EnvironmentId, CreatedAt, UpdatedAt
+        FROM Entity
+        WHERE EnvironmentId = @EnvironmentId";
 
         using var connection = await GetConnection();
         return await connection.QueryAsync<Entity>(query, new { EnvironmentId = environmentId });

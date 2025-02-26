@@ -63,10 +63,9 @@ public class SceneController : ControllerBase
             if (!TryGetAuthenticatedUserId(out var userId))
                 return Unauthorized("User is not authenticated.");
 
-
             var environment = await _environmentRepository.GetEnvironmentById(environmentId, userId);
             if (environment == null)
-                return NotFound("Environment not found or does not belong to the user.");
+                return NotFound("Environment not found or does not belong to the user or is not shared with the user.");
 
             var environmentDTO = new EnvironmentDTO
             {
@@ -76,7 +75,8 @@ public class SceneController : ControllerBase
                 MaxHeight = environment.MaxHeight,
                 CreatedAt = environment.CreatedAt,
                 UpdatedAt = environment.UpdatedAt,
-                EnvironmentType = environment.EnvironmentType
+                EnvironmentType = environment.EnvironmentType,
+                OriginalUserName = environment.OriginalUserName
             };
 
             return Ok(environmentDTO);
@@ -86,6 +86,7 @@ public class SceneController : ControllerBase
             return StatusCode(500, $"An error occurred while fetching the environment: {ex.Message}");
         }
     }
+
 
     // POST: /scene
     [HttpPost]
@@ -164,10 +165,9 @@ public class SceneController : ControllerBase
             if (!TryGetAuthenticatedUserId(out var userId))
                 return Unauthorized("User is not authenticated.");
 
-
             var environment = await _environmentRepository.GetEnvironmentById(environmentId, userId);
             if (environment == null)
-                return NotFound("Environment not found or does not belong to the user.");
+                return NotFound("Environment not found or does not belong to the user or is not shared with the user.");
 
             var entities = await _entityRepository.GetEntitiesFromEnvironment(environmentId);
 
