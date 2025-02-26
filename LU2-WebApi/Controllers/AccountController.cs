@@ -24,8 +24,8 @@ public class AccountController : ControllerBase
         try
         {
             var result = await _accountInfoRepository.RegisterUser(request);
-            if (!result.IsSuccess)
-                return BadRequest(result.ErrorMessage);
+            if (result == null || !result.IsSuccess)
+                return BadRequest(result?.ErrorMessage ?? "An unknown error occurred.");
 
             return Ok(result.SuccessMessage);
         }
@@ -42,8 +42,8 @@ public class AccountController : ControllerBase
         try
         {
             var result = await _accountInfoRepository.LoginUser(request);
-            if (!result.IsSuccess)
-                return BadRequest(result.ErrorMessage);
+            if (result == null || !result.IsSuccess)
+                return BadRequest(result?.ErrorMessage ?? "An unknown error occurred.");
 
             return Ok(result.SuccessMessage);
         }
@@ -60,6 +60,9 @@ public class AccountController : ControllerBase
         try
         {
             var result = await _accountInfoRepository.LogoutUser();
+            if (result == null)
+                return StatusCode(500, "An unknown error occurred during logout.");
+
             return Ok(result.SuccessMessage);
         }
         catch (Exception ex)
@@ -108,7 +111,7 @@ public class AccountController : ControllerBase
 
             var claimDTOs = claims.Select(claim => new UserClaimDTO
             {
-                Id = claim.Id,
+                Id = claim!.Id,
                 UserId = claim.UserId.ToString(),
                 ClaimType = claim.ClaimType,
                 ClaimValue = claim.ClaimValue

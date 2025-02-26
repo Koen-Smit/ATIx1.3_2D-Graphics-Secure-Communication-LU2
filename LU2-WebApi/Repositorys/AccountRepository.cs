@@ -16,8 +16,11 @@ public class AccountRepository : IAccountRepository
         _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
 
-    public async Task<Result> RegisterUser(AccountRequest request)
+    public async Task<Result?> RegisterUser(AccountRequest request)
     {
+        if (string.IsNullOrEmpty(request.UserName))
+            return Result.Failure("Username must be provided.");
+
         if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 10)
             return Result.Failure("Password does not meet the requirements.");
 
@@ -37,7 +40,7 @@ public class AccountRepository : IAccountRepository
         return Result.Success("Registration successful!");
     }
 
-    public async Task<Result> LoginUser(LoginRequest request)
+    public async Task<Result?> LoginUser(LoginRequest request)
     {
         if (_signInManager.Context.User?.Identity?.IsAuthenticated == true)
             return Result.Failure("User is already logged in.");
@@ -56,13 +59,13 @@ public class AccountRepository : IAccountRepository
         return Result.Success("Login successful!");
     }
 
-    public async Task<Result> LogoutUser()
+    public async Task<Result?> LogoutUser()
     {
         await _signInManager.SignOutAsync();
         return Result.Success("Logout successful!");
     }
 
-    public async Task<IEnumerable<UserClaimDTO>> GetUserClaims(Guid userId)
+    public async Task<IEnumerable<UserClaimDTO?>> GetUserClaims(Guid userId)
     {
         using var connection = new SqlConnection(_connectionString);
 
@@ -75,9 +78,9 @@ public class AccountRepository : IAccountRepository
         return claims;
     }
 
-    public async Task<string?> GetUserName(Guid userId)
+    public async Task<string> GetUserName(Guid userId)
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
-        return user?.UserName;
+        return user?.UserName ?? string.Empty;
     }
 }

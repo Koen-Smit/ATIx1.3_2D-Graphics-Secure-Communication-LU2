@@ -19,7 +19,7 @@ public class EntityRepository : IEntityRepository
         return connection;
     }
 
-    public async Task<IEnumerable<Entity>> GetEntitiesFromEnvironment(Guid environmentId)
+    public async Task<IEnumerable<Entity?>> GetEntitiesFromEnvironment(Guid environmentId)
     {
         const string query = @"
             SELECT Id, Prefab_Id, PositionX, PositionY, ScaleX, ScaleY, RotationZ, SortingLayer, EnvironmentId, CreatedAt, UpdatedAt

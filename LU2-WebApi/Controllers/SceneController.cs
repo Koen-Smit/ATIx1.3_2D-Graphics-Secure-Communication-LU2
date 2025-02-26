@@ -36,7 +36,7 @@ public class SceneController : ControllerBase
             var environments = await _environmentRepository.GetEnvironmentsFromUser(userId);
             var environmentDtos = environments.Select(e => new EnvironmentDTO
             {
-                Id = e.Id,
+                Id = e!.Id,
                 Name = e.Name,
                 MaxLength = e.MaxLength,
                 MaxHeight = e.MaxHeight,
@@ -110,7 +110,7 @@ public class SceneController : ControllerBase
 
             var result = await _environmentRepository.CreateEnvironment(newEnvironment);
 
-            if (result.IsSuccess)
+            if (result!.IsSuccess)
                 return CreatedAtAction(nameof(GetEnvironments), new { id = newEnvironment.Id }, newEnvironment);
 
             return result.ErrorMessage switch
@@ -138,7 +138,7 @@ public class SceneController : ControllerBase
                 return Unauthorized("User is not authenticated.");
             var result = await _environmentRepository.DeleteEnvironment(environmentId, userId);
 
-            if (result.IsSuccess)
+            if (result!.IsSuccess)
                 return Ok("Environment deleted successfully.");
 
             return result.ErrorMessage switch

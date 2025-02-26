@@ -9,20 +9,18 @@ using System.Threading.Tasks;
 [TestClass]
 public class SceneControllerTests
 {
-    private Mock<IEnvironmentRepository> _mockEnvironmentRepository;
-    private Mock<IEntityRepository> _mockEntityRepository;
-    private Mock<IAuthenticationService> _mockAuthService;
-    private SceneController _controller;
+    private Mock<IEnvironmentRepository>? _mockEnvironmentRepository;
+    private Mock<IEntityRepository>? _mockEntityRepository;
+    private Mock<IAuthenticationService>? _mockAuthService;
+    private SceneController? _controller;
 
     [TestInitialize]
     public void Setup()
     {
-        // Setup mocks for the dependencies
         _mockEnvironmentRepository = new Mock<IEnvironmentRepository>();
         _mockEntityRepository = new Mock<IEntityRepository>();
         _mockAuthService = new Mock<IAuthenticationService>();
 
-        // Initialize the controller with mocked dependencies
         _controller = new SceneController(
             _mockEnvironmentRepository.Object,
             _mockEntityRepository.Object,
@@ -33,7 +31,6 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnEnvironments_WhenUserIsAuthenticated()
     {
-        // Arrange
         var userId = Guid.NewGuid();
         var environments = new List<Environment>
         {
@@ -41,16 +38,11 @@ public class SceneControllerTests
             new Environment { Id = Guid.NewGuid(), Name = "Scene 2", UserId = userId, MaxLength = 24, MaxHeight = 28, CreatedAt = DateTime.UtcNow }
         };
 
-        // Mock the authentication service to return the user ID
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockEnvironmentRepository!.Setup(repo => repo.GetEnvironmentsFromUser(userId)).ReturnsAsync(environments);
 
-        // Mock the repository to return the environments for the user
-        _mockEnvironmentRepository.Setup(repo => repo.GetEnvironmentsFromUser(userId)).ReturnsAsync(environments);
+        var result = await _controller!.GetEnvironments();
 
-        // Act
-        var result = await _controller.GetEnvironments();
-
-        // Assert
         var actionResult = result.Result as OkObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(200, actionResult.StatusCode, "Status code should be 200 OK.");
@@ -64,13 +56,9 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
-        // Arrange
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
+        var result = await _controller!.GetEnvironments();
 
-        // Act
-        var result = await _controller.GetEnvironments();
-
-        // Assert
         var actionResult = result.Result as UnauthorizedObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(401, actionResult.StatusCode, "Status code should be 401 Unauthorized.");
@@ -80,15 +68,12 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnInternalServerError_WhenExceptionOccurs()
     {
-        // Arrange
         var userId = Guid.NewGuid();
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
-        _mockEnvironmentRepository.Setup(repo => repo.GetEnvironmentsFromUser(userId)).ThrowsAsync(new Exception("Database error"));
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockEnvironmentRepository!.Setup(repo => repo.GetEnvironmentsFromUser(userId)).ThrowsAsync(new Exception("Database error"));
 
-        // Act
-        var result = await _controller.GetEnvironments();
+        var result = await _controller!.GetEnvironments();
 
-        // Assert
         var actionResult = result.Result as ObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(500, actionResult.StatusCode, "Status code should be 500 Internal Server Error.");
@@ -98,7 +83,6 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetAllEntities_ShouldReturnEntities_WhenUserIsAuthenticated()
     {
-        // Arrange
         var userId = Guid.NewGuid();
         var environmentId = Guid.NewGuid();
         var entities = new List<Entity>
@@ -107,33 +91,28 @@ public class SceneControllerTests
         new Entity { Id = Guid.NewGuid(), Prefab_Id = "test", PositionX = 2, PositionY = 2, ScaleX = 2, ScaleY = 2, RotationZ = 90, SortingLayer = 2, EnvironmentId = environmentId }
     };
 
-        // Mock authentication service to return the user ID
-        _mockAuthService
+        _mockAuthService!
             .Setup(a => a.GetCurrentAuthenticatedUserId())
             .Returns(userId.ToString());
-
-        // Mock environment repository to ensure the environment exists
-        _mockEnvironmentRepository
+        
+        _mockEnvironmentRepository!
             .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
             .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
 
-        // Mock entity repository to return the list of entities
-        _mockEntityRepository
+        _mockEntityRepository!
             .Setup(repo => repo.GetEntitiesFromEnvironment(environmentId))
             .ReturnsAsync(entities);
 
-        // Act
-        var result = await _controller.GetAllEntities(environmentId);
+        var result = await _controller!.GetAllEntities(environmentId);
 
-        // Assert
         Assert.IsNotNull(result, "Result should not be null.");
         Assert.IsNotNull(result.Result, "Action result should not be null.");
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult), $"Expected OkObjectResult but got {result.Result.GetType().Name}.");
 
         var actionResult = result.Result as OkObjectResult;
-        Assert.AreEqual(200, actionResult.StatusCode, "Status code should be 200 OK.");
+        Assert.AreEqual(200, actionResult?.StatusCode, "Status code should be 200 OK.");
 
-        var returnedEntities = actionResult.Value as IEnumerable<Entity>;
+        var returnedEntities = actionResult?.Value as IEnumerable<Entity>;
         Assert.IsNotNull(returnedEntities, "Returned entities should not be null.");
         Assert.IsTrue(returnedEntities.Any(), "Returned entities should not be empty.");
         Assert.AreEqual(entities.Count, returnedEntities.Count(), "Returned entity count should match the mocked entities count.");
@@ -148,13 +127,10 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetAllEntities_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
-        // Arrange
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
 
-        // Act
-        var result = await _controller.GetAllEntities(Guid.NewGuid());
+        var result = await _controller!.GetAllEntities(Guid.NewGuid());
 
-        // Assert
         var actionResult = result.Result as UnauthorizedObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(401, actionResult.StatusCode, "Status code should be 401 Unauthorized.");
@@ -164,29 +140,23 @@ public class SceneControllerTests
     [TestMethod]
     public async Task GetAllEntities_ShouldReturnNotFound_WhenEntitiesNotFound()
     {
-        // Arrange
         var userId = Guid.NewGuid();
         var environmentId = Guid.NewGuid();
 
-        // Mock authentication service to return the user ID
-        _mockAuthService
+        _mockAuthService!
             .Setup(a => a.GetCurrentAuthenticatedUserId())
             .Returns(userId.ToString());
 
-        // Mock environment repository to ensure the environment exists
-        _mockEnvironmentRepository
+        _mockEnvironmentRepository!
             .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
             .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
 
-        // Mock entity repository to return null (indicating no entities found)
-        _mockEntityRepository
+        _mockEntityRepository!
             .Setup(repo => repo.GetEntitiesFromEnvironment(environmentId))
-            .ReturnsAsync((List<Entity>)null);
+            .ReturnsAsync((List<Entity>)null!);
 
-        // Act
-        var result = await _controller.GetAllEntities(environmentId);
+        var result = await _controller!.GetAllEntities(environmentId);
 
-        // Assert
         Assert.IsNotNull(result, "Result should not be null.");
         Assert.IsNotNull(result.Result, "Action result should not be null.");
 
@@ -205,7 +175,6 @@ public class SceneControllerTests
     [TestMethod]
     public async Task CreateEntity_ShouldReturnCreated_WhenUserIsAuthenticated()
     {
-        // Arrange
         var userId = Guid.NewGuid();
         var environmentId = Guid.NewGuid();
 
@@ -234,25 +203,20 @@ public class SceneControllerTests
             EnvironmentId = createRequest.EnvironmentId
         };
 
-        // Mock authentication service to return the user ID
-        _mockAuthService
+        _mockAuthService!
             .Setup(a => a.GetCurrentAuthenticatedUserId())
             .Returns(userId.ToString());
 
-        // Mock environment repository to return a valid environment
-        _mockEnvironmentRepository
+        _mockEnvironmentRepository!
             .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
             .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
 
-        // Mock entity repository to simulate successful entity creation
-        _mockEntityRepository
+        _mockEntityRepository!
             .Setup(repo => repo.CreateEntity(It.IsAny<Entity>()))
             .ReturnsAsync(1);
 
-        // Act
-        var result = await _controller.CreateEntity(createRequest);
+        var result = await _controller!.CreateEntity(createRequest);
 
-        // Assert
         Assert.IsNotNull(result, "Result should not be null.");
         Assert.IsNotNull(result.Result, "Action result should not be null.");
 
@@ -275,8 +239,7 @@ public class SceneControllerTests
     [TestMethod]
     public async Task CreateEntity_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
-        // Arrange
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
         var createRequest = new EntityRequest
         {
             Prefab_Id = "test",
@@ -289,10 +252,8 @@ public class SceneControllerTests
             EnvironmentId = Guid.NewGuid()
         };
 
-        // Act
-        var result = await _controller.CreateEntity(createRequest);
+        var result = await _controller!.CreateEntity(createRequest);
 
-        // Assert
         var actionResult = result.Result as UnauthorizedObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(401, actionResult.StatusCode, "Status code should be 401 Unauthorized.");
@@ -302,7 +263,6 @@ public class SceneControllerTests
     [TestMethod]
     public async Task CreateEntity_ShouldReturnNotFound_WhenEnvironmentDoesNotExist()
     {
-        // Arrange
         var userId = Guid.NewGuid();
         var createRequest = new EntityRequest
         {
@@ -313,19 +273,13 @@ public class SceneControllerTests
             ScaleY = 1,
             RotationZ = 0,
             SortingLayer = 1,
-            EnvironmentId = Guid.NewGuid() // Non-existent environment
+            EnvironmentId = Guid.NewGuid()
         };
 
-        // Mock the authentication service to return the user ID
-        _mockAuthService.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockEnvironmentRepository!.Setup(repo => repo.GetEnvironmentById(createRequest.EnvironmentId, userId)).ReturnsAsync((Environment)null!);
+        var result = await _controller!.CreateEntity(createRequest);
 
-        // Mock the repository to return null for the environment
-        _mockEnvironmentRepository.Setup(repo => repo.GetEnvironmentById(createRequest.EnvironmentId, userId)).ReturnsAsync((Environment)null);
-
-        // Act
-        var result = await _controller.CreateEntity(createRequest);
-
-        // Assert
         var actionResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(404, actionResult.StatusCode, "Status code should be 404 Not Found.");

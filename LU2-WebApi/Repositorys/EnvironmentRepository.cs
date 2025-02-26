@@ -16,7 +16,7 @@ public class EnvironmentRepository : IEnvironmentRepository
         return connection;
     }
 
-    public async Task<IEnumerable<Environment>> GetEnvironmentsFromUser(Guid userId)
+    public async Task<IEnumerable<Environment?>> GetEnvironmentsFromUser(Guid userId)
     {
         const string query = @"
             SELECT Id, Name, MaxLength, MaxHeight, CreatedAt, UpdatedAt, CAST(UserId AS UNIQUEIDENTIFIER) AS UserId, EnvironmentType
@@ -38,7 +38,7 @@ public class EnvironmentRepository : IEnvironmentRepository
         return await connection.QueryFirstOrDefaultAsync<Environment>(query, new { EnvironmentId = environmentId, UserId = userId });
     }
 
-    public async Task<Result> CreateEnvironment(Environment environment)
+    public async Task<Result?> CreateEnvironment(Environment environment)
     {
         using var connection = await GetConnection();
         using var transaction = connection.BeginTransaction();
@@ -75,7 +75,7 @@ public class EnvironmentRepository : IEnvironmentRepository
         }
     }
 
-    public async Task<Result> DeleteEnvironment(Guid environmentId, Guid userId)
+    public async Task<Result?> DeleteEnvironment(Guid environmentId, Guid userId)
     {
         using var connection = await GetConnection();
         using var transaction = connection.BeginTransaction();
