@@ -31,6 +31,11 @@ public class APIManager : MonoBehaviour
     }
     private void ResponseHandling(UnityWebRequest request, Action<APIResponse> callback)
     {
+        if (callback == null)
+        {
+            Debug.LogError("Callback is null, skipping response handling.");
+            return;
+        }
         int statusCode = (int)request.responseCode;
         if (request.result != UnityWebRequest.Result.Success)
         {
@@ -40,13 +45,13 @@ public class APIManager : MonoBehaviour
             if (statusCode == 405)
             {
                 Scene currentScene = SceneManager.GetActiveScene();
-                if (currentScene.buildIndex != 0)
+                if (currentScene != null && currentScene.buildIndex != 0)
                     SceneManager.LoadScene(0);
             }
         }
         else
         {
-            APIResponse response = new APIResponse(true, "Request Successful", request.downloadHandler.text, statusCode);
+            APIResponse response = new APIResponse(true, "Request Successful", request.downloadHandler?.text, statusCode);
             callback?.Invoke(response);
         }
     }

@@ -26,6 +26,8 @@ public class MenuHandler : MonoBehaviour
         pauseMenuPanel.SetActive(!isActive);
     }
 
+
+
     public void OnLogoutButtonPressed()
     {
         APIManager.Instance.PostRequest("/account/logout", "", OnLogoutResponse);

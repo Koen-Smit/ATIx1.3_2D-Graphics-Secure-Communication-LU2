@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Net;
+using UnityEngine.SceneManagement;
 
 public class SceneHandler : MonoBehaviour
 {
@@ -51,17 +52,20 @@ public class SceneHandler : MonoBehaviour
     {
         if (worldIndex < sceneList.Count)
         {
-            LoadSceneByID(sceneList[worldIndex].id);
+            LoadPlanetScene(sceneList[worldIndex].id);
         }
         else
         {
             CreateNewWorld();
         }
     }
-    public void LoadSceneByID(string sceneID)
+
+    public void LoadPlanetScene(string sceneID)
     {
-        APIManager.Instance.GetRequest("/Scene", OnSceneReceived);
+        PlayerPrefs.SetString("SelectedSceneID", sceneID);
+        SceneManager.LoadScene("PlanetScene");
     }
+
 
     public void CreateNewWorld()
     {
@@ -72,28 +76,11 @@ public class SceneHandler : MonoBehaviour
     {
         SceneRequest newScene = new SceneRequest
         {
-            name = nameField.text
+            name = nameField.text,
+            environmentType = 2,
+            maxLength = 20,
+            maxHeight = 20
         };
-
-        if (int.TryParse(typeField.text, out int type))
-            newScene.environmentType = type;
-
-        if (int.TryParse(lengthField.text, out int maxLength))
-            newScene.maxLength = maxLength;
-        else
-        {
-            ResultText.text = "Max Length moet een geldig nummer zijn!";
-            return;
-        }
-
-        if (int.TryParse(heightField.text, out int maxHeight))
-            newScene.maxHeight = maxHeight;
-        else
-        {
-            ResultText.text = "Max Height moet een geldig nummer zijn!";
-            return;
-        }
-
         string jsonData = JsonUtility.ToJson(newScene);
         APIManager.Instance.PostRequest("/Scene", jsonData, OnSceneRespone);
     }
@@ -110,7 +97,7 @@ public class SceneHandler : MonoBehaviour
             CreateWorldPanel.SetActive(false);
             SceneData scene = JsonUtility.FromJson<SceneData>(response.Data);
             sceneList.Add(scene);
-            LoadSceneByID(scene.id);
+            LoadPlanetScene(scene.id);
         }
         else
         {
@@ -129,8 +116,3 @@ public class SceneHandler : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public class SceneListWrapper
-{
-    public SceneData[] scenes;
-}

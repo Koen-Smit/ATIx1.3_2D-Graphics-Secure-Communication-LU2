@@ -9,7 +9,6 @@ public class HoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private Vector3 originalScale;
     private Transform targetTransform;
 
-
     private void Start()
     {
         targetTransform = transform;
@@ -27,17 +26,24 @@ public class HoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerEnter(PointerEventData eventData)
     {
         targetTransform.localScale = originalScale * scaleFactor;
-        if (tooltipText == null)
+
+        if (TooltipManager.Instance != null)
         {
-            tooltipText = "";
+            if (tooltipText == null)
+            {
+                tooltipText = "";
+            }
+            TooltipManager.Instance.ShowTooltip(tooltipText);
         }
-        TooltipManager.Instance.ShowTooltip(tooltipText);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         targetTransform.localScale = originalScale;
-        TooltipManager.Instance.HideTooltip();
-    }
 
+        if (TooltipManager.Instance != null)
+        {
+            TooltipManager.Instance.HideTooltip();
+        }
+    }
 }

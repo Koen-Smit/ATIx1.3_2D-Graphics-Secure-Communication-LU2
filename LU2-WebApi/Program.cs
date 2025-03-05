@@ -14,7 +14,6 @@ builder.Services.AddScopes(connectionString);
 builder.Services.AddIdentity(connectionString);
 builder.Services.AddAuthorization();
 
-// Rate limiter: Max 5 requests, per 10 seconds
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
@@ -22,7 +21,7 @@ builder.Services.AddRateLimiter(options =>
             context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             key => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10,
+                PermitLimit = 50,
                 Window = TimeSpan.FromSeconds(10)
             }
         ));

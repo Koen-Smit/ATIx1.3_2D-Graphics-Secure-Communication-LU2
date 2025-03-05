@@ -196,7 +196,7 @@ PublishScripts/
 # NuGet Packages
 *.nupkg
 *.snupkg
-**/[Pp]ackages/*
+
 !**/[Pp]ackages/build/
 *.nuget.props
 *.nuget.targets
@@ -422,7 +422,6 @@ Assets/Scenes/TestResults*
 .collab/
 
 # Ignore Packages folder
-Packages/
 
 # Ignore Addressables Build Data
 Assets/AddressableAssetsData/*.bin
