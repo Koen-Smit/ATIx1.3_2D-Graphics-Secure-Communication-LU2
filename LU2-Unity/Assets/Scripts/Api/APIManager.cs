@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class APIManager : MonoBehaviour
 {
     private static APIManager _instance;
-    private string baseUrl = "https://localhost:7067"; //Azure-db: "https://avansict2227609.azurewebsites.net"
+    private string baseUrl = "https://avansict2227609.azurewebsites.net";
 
     public static APIManager Instance
     {

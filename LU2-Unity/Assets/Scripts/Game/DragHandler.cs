@@ -10,6 +10,7 @@ public class Draggable : MonoBehaviour
 
     private Vector3 originalScale;
     private Vector3 dragScale = new Vector3(1.2f, 1.2f, 1f);
+    private Vector3 baseScale;
 
     private void Start()
     {
@@ -19,6 +20,7 @@ public class Draggable : MonoBehaviour
         }
 
         originalScale = transform.localScale;
+        baseScale = originalScale;
     }
 
     private void Update()
@@ -28,7 +30,27 @@ public class Draggable : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
             mousePosition.z = 0;
             transform.position = mousePosition;
-            transform.localScale = dragScale;
+            //transform.localScale = dragScale;
+            transform.localScale = baseScale * 1.2f;
+
+            if (Input.GetKey(KeyCode.R))
+            {
+                transform.Rotate(0, 0, 5f);
+            }
+            if (Input.GetKey(KeyCode.Equals) || Input.GetKey(KeyCode.KeypadPlus))
+            {
+                baseScale *= 1.1f;
+                baseScale.x = Mathf.Clamp(baseScale.x, 1, 10);
+                baseScale.y = Mathf.Clamp(baseScale.y, 1, 10);
+                transform.localScale = baseScale * (isDragging ? 1.2f : 1f);
+            }
+            if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))
+            {
+                baseScale *= 0.9f;
+                baseScale.x = Mathf.Clamp(baseScale.x, 1, 10);
+                baseScale.y = Mathf.Clamp(baseScale.y, 1, 10);
+                transform.localScale = baseScale * (isDragging ? 1.2f : 1f);
+            }
         }
     }
 
@@ -45,8 +67,8 @@ public class Draggable : MonoBehaviour
         {
             lastClickTime = Time.time;
         }
-
-        transform.localScale = dragScale;
+        //transform.localScale = dragScale;
+        transform.localScale = baseScale * 1.2f;
     }
 
     private void OnMouseUp()
@@ -54,115 +76,8 @@ public class Draggable : MonoBehaviour
         if (!isDraggingDisabled)
         {
             isDragging = false;
-            transform.localScale = originalScale;
+            //transform.localScale = originalScale;
+            transform.localScale = baseScale;
         }
     }
 }
-
-
-
-//using UnityEngine;
-
-//public class Draggable : MonoBehaviour
-//{
-//    public static bool isDraggingDisabled = false;
-//    public GameObject prefabToClone;
-//    private bool hasCloned = false;
-
-//    private bool isDragging = false;
-
-//    private void Update()
-//    {
-//        if (isDragging && !isDraggingDisabled)
-//        {
-//            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
-//            mousePosition.z = 0;
-//            transform.position = mousePosition;
-//        }
-//    }
-
-//    private void OnMouseDown()
-//    {
-//        isDragging = true;
-//        if (!hasCloned)
-//        {
-//            Clone();
-//            hasCloned = true;
-//        }
-//    }
-
-//    private void Clone()
-//    {
-//        GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
-//        Draggable cloneHandler = clone.GetComponent<Draggable>();
-//        clone.transform.localScale = new Vector3(5, 5, 5);
-//        cloneHandler.hasCloned = false;
-//    }
-//    private void OnMouseUp()
-//    {
-//        isDragging = false;
-
-//        Destroy(this);
-//        Debug.Log("Dropped, api request");
-//    }
-//}
-
-
-//using UnityEngine;
-
-//public class DragObjects : MonoBehaviour
-//{
-//    public static bool isDraggingDisabled = false;
-//    public GameObject prefabToClone;
-//    private bool hasCloned = false;
-
-//    private bool isDragging = false;
-
-//    private void Update()
-//    {
-//        if (isDragging && !isDraggingDisabled)
-//        {
-//            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
-//            mousePosition.z = 0;
-//            transform.position = mousePosition;
-//        }
-//    }
-
-//    private void OnMouseDown()
-//    {
-//        isDragging = true;
-//        if (!hasCloned)
-//        {
-//            Clone();
-//            hasCloned = true;
-//        }
-//    }
-
-//    private void Clone()
-//    {
-//        if (prefabToClone != null)
-//        {
-//            GameObject clone = Instantiate(prefabToClone, transform.position, transform.rotation);
-//            clone.transform.localScale = new Vector3(7f, 7f, 5f);
-//            clone.transform.SetParent(transform.parent, true);
-
-//            DragObjects cloneHandler = clone.GetComponent<DragObjects>();
-//            if (cloneHandler != null)
-//            {
-//                cloneHandler.hasCloned = false;
-//            }
-//        }
-//        else
-//        {
-//            Debug.LogError("Prefab to clone is not assigned!");
-//        }
-//    }
-
-//    private void OnMouseUp()
-//    {
-//        isDragging = false;
-
-//        Destroy(this);
-//        Debug.Log("Dropped, API request");
-//    }
-//}
