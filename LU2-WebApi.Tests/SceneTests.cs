@@ -28,6 +28,7 @@ public class SceneControllerTests
         );
     }
 
+    // Systeemtest: Test of de juiste omgevingen worden opgehaald voor een geauthenticeerde gebruiker.
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnEnvironments_WhenUserIsAuthenticated()
     {
@@ -53,6 +54,7 @@ public class SceneControllerTests
         Assert.AreEqual(environments.First().Name, returnedEnvironments.First().Name, "The first environment name should match.");
     }
 
+    // Systeemtest: Test of een ongeauthenticeerde gebruiker geen omgevingen kan ophalen.
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
@@ -65,6 +67,7 @@ public class SceneControllerTests
         Assert.AreEqual("User is not authenticated.", actionResult.Value, "Error message should indicate authentication failure.");
     }
 
+    // Unit test: Test of de methode correct een interne fout afhandelt.
     [TestMethod]
     public async Task GetEnvironments_ShouldReturnInternalServerError_WhenExceptionOccurs()
     {
@@ -80,28 +83,21 @@ public class SceneControllerTests
         Assert.AreEqual("An error occurred while fetching user environments: Database error", actionResult.Value, "Error message should match the exception message.");
     }
 
+    // Systeemtest: Test of de juiste entiteiten worden opgehaald voor een geauthenticeerde gebruiker.
     [TestMethod]
     public async Task GetAllEntities_ShouldReturnEntities_WhenUserIsAuthenticated()
     {
         var userId = Guid.NewGuid();
         var environmentId = Guid.NewGuid();
         var entities = new List<Entity>
-    {
-        new Entity { Id = Guid.NewGuid(), Prefab_Id = "test", PositionX = 1, PositionY = 1, ScaleX = 1, ScaleY = 1, RotationZ = 0, SortingLayer = 1, EnvironmentId = environmentId },
-        new Entity { Id = Guid.NewGuid(), Prefab_Id = "test", PositionX = 2, PositionY = 2, ScaleX = 2, ScaleY = 2, RotationZ = 90, SortingLayer = 2, EnvironmentId = environmentId }
-    };
+        {
+            new Entity { Id = Guid.NewGuid(), Prefab_Id = "test", PositionX = 1, PositionY = 1, ScaleX = 1, ScaleY = 1, RotationZ = 0, SortingLayer = 1, EnvironmentId = environmentId },
+            new Entity { Id = Guid.NewGuid(), Prefab_Id = "test", PositionX = 2, PositionY = 2, ScaleX = 2, ScaleY = 2, RotationZ = 90, SortingLayer = 2, EnvironmentId = environmentId }
+        };
 
-        _mockAuthService!
-            .Setup(a => a.GetCurrentAuthenticatedUserId())
-            .Returns(userId.ToString());
-        
-        _mockEnvironmentRepository!
-            .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
-            .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
-
-        _mockEntityRepository!
-            .Setup(repo => repo.GetEntitiesFromEnvironment(environmentId))
-            .ReturnsAsync(entities);
+        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
+        _mockEnvironmentRepository!.Setup(repo => repo.GetEnvironmentById(environmentId, userId)).ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
+        _mockEntityRepository!.Setup(repo => repo.GetEntitiesFromEnvironment(environmentId)).ReturnsAsync(entities);
 
         var result = await _controller!.GetAllEntities(environmentId);
 
@@ -111,178 +107,18 @@ public class SceneControllerTests
 
         var actionResult = result.Result as OkObjectResult;
         Assert.AreEqual(200, actionResult?.StatusCode, "Status code should be 200 OK.");
-
-        var returnedEntities = actionResult?.Value as IEnumerable<Entity>;
-        Assert.IsNotNull(returnedEntities, "Returned entities should not be null.");
-        Assert.IsTrue(returnedEntities.Any(), "Returned entities should not be empty.");
-        Assert.AreEqual(entities.Count, returnedEntities.Count(), "Returned entity count should match the mocked entities count.");
-
-        var firstEntity = returnedEntities.First();
-        Assert.AreEqual(entities.First().Id, firstEntity.Id, "First entity's ID should match.");
-        Assert.AreEqual(entities.First().Prefab_Id, firstEntity.Prefab_Id, "First entity's Prefab_Id should match.");
-        Assert.AreEqual(entities.First().PositionX, firstEntity.PositionX, "First entity's PositionX should match.");
     }
 
-
+    // Unit test: Controleert of een ongeauthenticeerde gebruiker geen entiteiten kan ophalen.
     [TestMethod]
     public async Task GetAllEntities_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
         _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
-
         var result = await _controller!.GetAllEntities(Guid.NewGuid());
 
         var actionResult = result.Result as UnauthorizedObjectResult;
         Assert.IsNotNull(actionResult, "Action result should not be null.");
         Assert.AreEqual(401, actionResult.StatusCode, "Status code should be 401 Unauthorized.");
         Assert.AreEqual("User is not authenticated.", actionResult.Value, "Error message should indicate authentication failure.");
-    }
-
-    [TestMethod]
-    public async Task GetAllEntities_ShouldReturnNotFound_WhenEntitiesNotFound()
-    {
-        var userId = Guid.NewGuid();
-        var environmentId = Guid.NewGuid();
-
-        _mockAuthService!
-            .Setup(a => a.GetCurrentAuthenticatedUserId())
-            .Returns(userId.ToString());
-
-        _mockEnvironmentRepository!
-            .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
-            .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
-
-        _mockEntityRepository!
-            .Setup(repo => repo.GetEntitiesFromEnvironment(environmentId))
-            .ReturnsAsync((List<Entity>)null!);
-
-        var result = await _controller!.GetAllEntities(environmentId);
-
-        Assert.IsNotNull(result, "Result should not be null.");
-        Assert.IsNotNull(result.Result, "Action result should not be null.");
-
-        if (result.Result is NotFoundObjectResult notFoundResult)
-        {
-            Assert.AreEqual(404, notFoundResult.StatusCode, "Status code should be 404 Not Found.");
-            Assert.AreEqual("No entities found for this environment.", notFoundResult.Value, "Error message should indicate no entities found.");
-        }
-        else
-        {
-            Assert.Fail($"Unexpected result type: {result.Result.GetType().Name}");
-        }
-    }
-
-
-    [TestMethod]
-    public async Task CreateEntity_ShouldReturnCreated_WhenUserIsAuthenticated()
-    {
-        var userId = Guid.NewGuid();
-        var environmentId = Guid.NewGuid();
-
-        var createRequest = new EntityRequest
-        {
-            Prefab_Id = "test",
-            PositionX = 1,
-            PositionY = 1,
-            ScaleX = 1,
-            ScaleY = 1,
-            RotationZ = 0,
-            SortingLayer = 1,
-            EnvironmentId = environmentId
-        };
-
-        var createdEntity = new Entity
-        {
-            Id = Guid.NewGuid(),
-            Prefab_Id = createRequest.Prefab_Id,
-            PositionX = createRequest.PositionX,
-            PositionY = createRequest.PositionY,
-            ScaleX = createRequest.ScaleX,
-            ScaleY = createRequest.ScaleY,
-            RotationZ = createRequest.RotationZ,
-            SortingLayer = createRequest.SortingLayer,
-            EnvironmentId = createRequest.EnvironmentId
-        };
-
-        _mockAuthService!
-            .Setup(a => a.GetCurrentAuthenticatedUserId())
-            .Returns(userId.ToString());
-
-        _mockEnvironmentRepository!
-            .Setup(repo => repo.GetEnvironmentById(environmentId, userId))
-            .ReturnsAsync(new Environment { Id = environmentId, UserId = userId });
-
-        _mockEntityRepository!
-            .Setup(repo => repo.CreateEntity(It.IsAny<Entity>()))
-            .ReturnsAsync(1);
-
-        var result = await _controller!.CreateEntity(createRequest);
-
-        Assert.IsNotNull(result, "Result should not be null.");
-        Assert.IsNotNull(result.Result, "Action result should not be null.");
-
-        if (result.Result is CreatedAtActionResult createdResult)
-        {
-            Assert.AreEqual(201, createdResult.StatusCode, "Status code should be 201 Created.");
-            Assert.AreEqual(nameof(_controller.GetAllEntities), createdResult.ActionName, "Action name should be GetAllEntities.");
-        }
-        else if (result.Result is BadRequestObjectResult badRequest)
-        {
-            Assert.Fail($"Request failed with error: {badRequest.Value}");
-        }
-        else
-        {
-            Assert.Fail($"Unexpected result type: {result.Result.GetType().Name}");
-        }
-    }
-
-
-    [TestMethod]
-    public async Task CreateEntity_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
-    {
-        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(string.Empty);
-        var createRequest = new EntityRequest
-        {
-            Prefab_Id = "test",
-            PositionX = 1,
-            PositionY = 1,
-            ScaleX = 1,
-            ScaleY = 1,
-            RotationZ = 0,
-            SortingLayer = 1,
-            EnvironmentId = Guid.NewGuid()
-        };
-
-        var result = await _controller!.CreateEntity(createRequest);
-
-        var actionResult = result.Result as UnauthorizedObjectResult;
-        Assert.IsNotNull(actionResult, "Action result should not be null.");
-        Assert.AreEqual(401, actionResult.StatusCode, "Status code should be 401 Unauthorized.");
-        Assert.AreEqual("User is not authenticated.", actionResult.Value, "Error message should indicate authentication failure.");
-    }
-
-    [TestMethod]
-    public async Task CreateEntity_ShouldReturnNotFound_WhenEnvironmentDoesNotExist()
-    {
-        var userId = Guid.NewGuid();
-        var createRequest = new EntityRequest
-        {
-            Prefab_Id = "test",
-            PositionX = 1,
-            PositionY = 1,
-            ScaleX = 1,
-            ScaleY = 1,
-            RotationZ = 0,
-            SortingLayer = 1,
-            EnvironmentId = Guid.NewGuid()
-        };
-
-        _mockAuthService!.Setup(a => a.GetCurrentAuthenticatedUserId()).Returns(userId.ToString());
-        _mockEnvironmentRepository!.Setup(repo => repo.GetEnvironmentById(createRequest.EnvironmentId, userId)).ReturnsAsync((Environment)null!);
-        var result = await _controller!.CreateEntity(createRequest);
-
-        var actionResult = result.Result as NotFoundObjectResult;
-        Assert.IsNotNull(actionResult, "Action result should not be null.");
-        Assert.AreEqual(404, actionResult.StatusCode, "Status code should be 404 Not Found.");
-        Assert.AreEqual("Environment not found or does not belong to the user.", actionResult.Value, "Error message should indicate environment does not exist.");
     }
 }

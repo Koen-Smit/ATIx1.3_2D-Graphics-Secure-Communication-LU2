@@ -24,6 +24,7 @@ public class AccountControllerTests
         _controller = new AccountController(_mockAccountRepo.Object, _mockAuthService.Object, _mockUserManager.Object);
     }
 
+    // Unit test: Controleert of de registratie succesvol is en een OK-status retourneert.
     [TestMethod]
     public async Task Register_ReturnsOk_WhenRegistrationSucceeds()
     {
@@ -38,6 +39,7 @@ public class AccountControllerTests
         Assert.AreEqual("Registration successful", okResult.Value);
     }
 
+    // Unit test: Controleert of een mislukte registratie een BadRequest retourneert.
     [TestMethod]
     public async Task Register_ReturnsBadRequest_WhenRegistrationFails()
     {
@@ -52,40 +54,7 @@ public class AccountControllerTests
         Assert.AreEqual("Error occurred", badRequestResult.Value);
     }
 
-    //[TestMethod]
-    //public async Task Login_ReturnsOk_WhenLoginSucceeds_WithToken()
-    //{
-    //    var request = new LoginRequest { UserName = "testuser", Password = "Test@12345" };
-
-    //    _mockAccountRepo.Setup(repo => repo.LoginUser(request))
-    //                    .ReturnsAsync(new LoginResponse
-    //                    {
-    //                        Message = "Login successful",
-    //                        Token = "your_token_here"
-    //                    });
-
-    //    var result = await _controller.Login(request);
-    //    var okResult = result as OkObjectResult;
-    //    Assert.IsNotNull(okResult);
-    //    Assert.AreEqual(200, okResult.StatusCode);
-    //    Assert.AreEqual("Login successful, token: your_token_here", okResult.Value);
-    //}
-
-    //[TestMethod]
-    //public async Task Login_ReturnsBadRequest_WhenLoginFails()
-    //{
-    //    var request = new LoginRequest { UserName = "testuser", Password = "wrongpass" };
-
-    //    _mockAccountRepo.Setup(repo => repo.LoginUser(request))
-    //                    .ReturnsAsync((LoginResponse?)null);
-
-    //    var result = await _controller.Login(request);
-    //    var badRequestResult = result as BadRequestObjectResult;
-    //    Assert.IsNotNull(badRequestResult);
-    //    Assert.AreEqual(400, badRequestResult.StatusCode);
-    //    Assert.AreEqual("Invalid credentials", badRequestResult.Value);
-    //}
-
+    // Unit test: Controleert of uitloggen succesvol is en een OK-status retourneert.
     [TestMethod]
     public async Task Logout_ReturnsOk_WhenLogoutSucceeds()
     {
@@ -99,6 +68,7 @@ public class AccountControllerTests
         Assert.AreEqual("Logout successful", okResult.Value);
     }
 
+    // Unit test: Controleert of een ongeauthenticeerde gebruiker geen gebruikersnaam kan opvragen.
     [TestMethod]
     public async Task GetUserName_ReturnsUnauthorized_WhenUserIsNotAuthenticated()
     {
@@ -112,6 +82,7 @@ public class AccountControllerTests
         Assert.AreEqual("User is not authenticated or invalid user ID.", unauthorizedResult.Value);
     }
 
+    // Unit test: Controleert of een niet-bestaande gebruiker een NotFound-status retourneert.
     [TestMethod]
     public async Task GetUserName_ReturnsNotFound_WhenUserDoesNotExist()
     {
