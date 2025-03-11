@@ -78,6 +78,8 @@ Objecten plaatsen en bewerken:
 
 ![Demo](Assets/Gif/Share-world.gif)
 
+---
+
 ### Backend(C# API):
 Lokaal gebruik ik SwaggerUI om de functionaliteiten van mijn API helder en overzichtelijk weer te geven:
 
@@ -89,6 +91,54 @@ Hierboven staan alle API-calls. Alles werkt op basis van de User-ID, wat beteken
 
 - **Code voor de api staat in de folder: `/LU2-WebApi`**
 
+---
+
 ### Tests(MSTests & Postman):
+Ook het testen van de API was een belangrijk onderdeel deze periode. Ik heb gebruik gemaakt van verschillende manieren om te testen:
+- MSTests
+- Postman
+
+**MSTests:**
+
+Met MSTests heb ik verschillende specifiekere functies getest, zie hieronder:
+
+![Img](Assets/Test-result.PNG)
+
+Dit zijn de tests die automatisch worden uitgevoerd wanneer ik de code naar GitHub push. Als alle tests slagen, wordt de API gedeployed naar Azure en komt deze online. _Hieronder een korte samenvatting van de tests_:
+
+- _GetUsername_ (return: NotFound/Unauthorized): Controleert of je een gebruikersnaam kunt ophalen zonder ingelogd te zijn. Dit test indirect alle rechten, aangezien een gebruiker zonder inlog geen enkele actie kan uitvoeren.
+
+- _Logout_ (return: OK): Melding dat de gebruiker is uitgelogd (test dus het uitloggen)
+
+- _Register_ (return: BadRequest/OK): Test eerst met onjuiste invoer, wat een BadRequest zou moeten opleveren. Vervolgens wordt een correcte invoer getest, waarbij een OK-melding bevestigt dat het account succesvol is aangemaakt. Hiermee wordt het registratieproces gevalideerd.
+
+- _GetAllEntities_ (return: OK/Unauthorized): Checked of de entities(objecten) goed terugkomen, en of de gebuiker hier ook de rechten voor heeft.
+
+- _GetEnvironments_: Test 3 keer of de gebruiker zijn environments kan ophalen, niet ingelogd(dus geen rechten): foutmelding, ook test het voor andere foutmeldingen. Is de gebruiker wel ingelogd? dan heeft de gebruiker rechten en geeft het een OK terug.
+
+Als alle tests goed terugkomen met de verwachte input wanneer het gepushed is naar github zou dit het resultaat van de pipeline moeten zijn:
+
+![Img](Assets/pipeline.PNG)
 
 
+**Postman:**
+
+Voor Postman heb ik een collectie gemaakt die vrijwel de hele applicatie doorloopt en doet testen. Eerst controleert deze of de gebruiker is ingelogd. Als dat zo is, wordt de gebruiker eerst uitgelogd om inconsistente resultaten te voorkomen. Vervolgens logt de gebruiker in, voert alle taken uit en verwijdert daarna de zojuist aangemaakte taken. Tot slot wordt de gebruiker weer uitgelogd.
+
+Elke test waarbij een item wordt aangemaakt, heeft een script dat het ID opslaat, zodat het later direct weer verwijderd kan worden. Zo blijft er geen onnodige data in de database achter na het testen.
+
+Je kunt deze collectie natuurlijk ook uitvoeren zonder het inloggedeelte. Dan zie je direct dat de gebruiker geen acties kan uitvoeren vanwege een gebrek aan rechten!
+
+Voor een visuele weergave van alle tests, zie hieronder:
+
+![Img](Assets/postman.PNG)
+
+
+Script:
+
+Let op, het script/collection hieronder bevat geen wachtwoorden of andere zaken vanwege beveiligingsredenen, met deze gegevens werkt het script wel.
+- [Postman test-collection](Assets/LU2-WebApi.postman_collection.json)
+
+Het test result lever ik in maar zet ik niet op de repo.
+
+---
