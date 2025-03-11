@@ -1,521 +1,94 @@
-# ATIx-ICT-B1.3-2D-Graphics-Secure-Communication-2024-25-P3-LU2
+# Avans HBO Jaar 1, Periode 3: ATIx ICT-B1.3 2D-Graphics and Secure-Communication LU2(2024-25)
+- (30-01-2025 / 12-03-2025)
+- C#, Azure, Unity, Postman, MSTests
 
-## TO DO:
+## Project Overview
+Dit is het derde project van mijn Informatica-opleiding. Het project bestaat uit een individueel en een groepsdeel. Dit is het individuele deel (LU2).
 
-### Handling Concurrency Issues in API
-**Problem:** Concurrent Updates Overwriting Data
+De opdracht: een eigen API ontwikkelen waarmee we data kunnen ophalen, bewerken en opslaan. Vervolgens wordt de API in de cloud geplaatst en gebruikt in een Unity front-end.
+- **Unity gedeelte(frontend)**, folder: `LU2-Unity`
+- **API gedeelte(backend)**, folder: `LU2-WebApi`
+- **MSTests(testen)**, folder: `LU2-WebApi.Tests`
 
-### Bulk Operations and Database Transactions
-**Question:** What if saving one of the 100 objects fails?  
-**Considerations:**
-- What should the final state of the system be?
-- Which HTTP status code is appropriate?
-- Je kunt je voorstellen dat wanneer je 100 objecten wilt opslaan, het inefficiënt zou zijn om 100 afzonderlijke verzoeken naar de API te sturen. In plaats daarvan kun je de API zo ontwerpen dat deze een lijst met objecten accepteert om in één keer op te slaan. Dit vermindert het netwerkverkeer aanzienlijk.
+Elke van deze onderdelen krijgt een aparte sectie waarin ik het verder behandel in deze README.
 
-**Possible Outcomes:**
-- 99 objects saved
-- 0 objects saved
+Preview:
+![Demo](Assets/Gif/delete-world.gif)
 
-### Adding a User
-**Details:**
-- Username
-- Hashed password
-- Foreign key or table to add multiple environments to the user
+- [Opdracht periode](Assets/Opdrachtbeschrijving.pdf)
+- [Start ERD](Assets/Erd_db.PNG)
 
-## Create Database
+## Beveiliging
+Om extra aandacht te geven aan een van de grotere onderwerpen van deze periode, namelijk beveiliging, heb ik naast verschillende aanvullende veiligheidsmaatregelen (zoals HTTPS, rate-limiting en andere technieken) ook online tests uitgevoerd om te verifiëren hoe goed mijn API-verbinding beveiligd is. Zie deze hieronder de scores van deze test:
 
-- Connect to localdb:
-  - **Server name:** (localdb)\MSSQLLocalDB
-  - **Authentication:** Windows Authentication
-- Right-click "databases" and choose: 'New database'
-- Use `db.sql` script in this repo to create the database
+![Img](Assets/SSL-report.PNG)
+![Img](Assets/security-header-check.PNG)
 
-## Database Usage
-- Object-Relational-Mapping framework (ORM)
-- Dapper, why? - Lightweight & fast, still uses queries which is useful for skill development
-
-### User Secrets:
-- `dotnet user-secrets init`
-- `dotnet user-secrets set "SqlConnectionString" "(your connectionstringhere)"`
-  - `(Server=(localdb)\\MSSQLLocalDB;Database=;Integrated Security=True;)`
-
-## Create Web API
-- `dotnet new webapi --use-controllers -n LU2-WebApi`
-- `dotnet new solution`
-
-Access the API:
-- [Swagger](https://localhost:7067/swagger)
-- [WeatherForecast](https://localhost:7067/WeatherForecast)
+Natuurlijk waren de resultaten niet meteen perfect, maar ik heb mijn applicatie zodanig aangepast dat deze nu wel aan de vereiste beveiligingsnormen van deze testen voldoet!
 
 ---
 
+## Applicatiestructuur/Functionaliteit/Demo
 
+### Frontend(Unity):
+Er zijn 4 verschillende "Scenes" in Unity waar je toegang toe hebt:
+- Login/Register scherm
+- Wereld selector scherm
+- Wereld scherm (de editor)
+- Share selector (overzicht van met jou gedeelde werelden)
 
-# API Documentation
-#### Authentication & Authorization:
-This API uses JWT-based authentication, Some endpoints require specific roles and claims.
+**1. Login/Register scherm**
+- Bij alle schermen waar je niet ingelogd bent, word je automatisch teruggestuurd naar het login scherm.
+- Hier kun je inloggen of registreren. De naam moet uniek zijn en het wachtwoord moet voldoen aan bepaalde eisen.
+- Nadat je succesvol bent ingelogd, wordt het Wereld selector scherm ingeladen. Ook heb je via een instellingen knop de keuze voor een logout.
 
-## Account Management
-### Add a Claim to a User
-- **Endpoint:** `POST /account/AccountManagement/{id}/{claim}/{value}`
-- **Permissions:**Requires ManageAccount permission
-- **Allowed Role:** Admin
+![Demo](Assets/Gif/Login-Register.gif)
 
-## Environment2D
+**2. Wereld selector scherm**
+- Na inloggen kun je kiezen uit al bestaande werelden of nieuwe werelden aanmaken.(Maximaal 5 werelden kunnen tegelijkertijd bestaan per user.)
+- Werelden worden gepresenteerd als planeten met de wereld namen. Als je minder dan 5 werelden hebt, zullen de overgebleven plaatsen gelabeld worden als "create world".
+- Wanneer je op "create world" klikt, kun je een naam kiezen en een nieuwe wereld aanmaken.
 
-### Get All Environment2D Objects
-- **Endpoint:** `GET /Environment2D`
-- **Permissions:** Requires Read permission
+**3. Wereld scherm (de editor)**
+- Als je op een planeet klikt, word je doorgestuurd naar de editor, waar je de zojuist geklikte wereld kunt bewerken.
 
-### Create a New Environment2D Object
-- **Endpoint:** `POST /Environment2D`
-- **Permissions:** Requires Write permission
+In de editor heb je verschillende opties:
+- Verwijder de wereld inclusief objecten.
+- Deel de wereld met anderen.
+- Plaats of bewerk objecten in de wereld. **(Wijzigingen worden pas doorgevoerd wanneer je op de "Opslaan" knop drukt. Anders gaan de wijzigingen verloren.)**
 
-### Get Environment2D Object by ID
-- **Endpoint:** `GET /Environment2D/{id}`
-- **Permissions:** Requires Read permission
+Objecten plaatsen en bewerken:
+- Klik op een object in de menubalk om het toe te voegen aan de wereld.
+- Sleep het object naar de gewenste locatie.
+- Gebruik `+` en `-` om de grootte van het object aan te passen.
+- Gebruik `R` om het object te roteren.
+- Wanneer je het object loslaat, wordt het geplaatst in de wereld.
+- `Dubbelklikken` op een object verwijdert het **(let op: pas bij opslaan wordt het object echt verwijderd).**
 
-### Update an Environment2D Object
-- **Endpoint:** `PUT /Environment2D/{id}`
-- **Permissions:** Requires Write permission
+![Demo](Assets/Gif/Create-edit-save-world.gif)
+![Demo](Assets/Gif/Delete-Object.gif)
+![Demo](Assets/Gif/delete-world.gif)
 
-### Delete an Environment2D Object
-- **Endpoint:** `DELETE /Environment2D/{id}`
-- **Permissions:** Requires Delete permission
-- **Allowed Role:** Admin
+**4. Share selector (overzicht van gedeelde werelden)**
+- Als je een wereld hebt gedeeld, is deze zichtbaar voor anderen in de Share selector.
+- Via de Wereld selector kun je naar dit overzicht navigeren.
+- In dit overzicht zie je alle werelden die met jou gedeeld zijn.
+- Als je op een gedeelde wereld klikt, laad je deze in de editor, maar met 
+- Je kunt de gedeelde wereld alleen bekijken, niet bewerken. (De editor opties zijn uitgeschakeld voor gedeelde werelden.)
 
-## LU2-WebApi (Authentication & User Management)
+![Demo](Assets/Gif/Share-world.gif)
 
-### Register a New User
-- **Endpoint:** `POST /account/register`
-- **Permissions:** Public (No authentication required)
+### Backend(C# API):
+Lokaal gebruik ik SwaggerUI om de functionaliteiten van mijn API helder en overzichtelijk weer te geven:
 
-### Login
-- **Endpoint:** `POST /account/login`
-- **Permissions:** Public (Requires valid user credentials)
+![Img](Assets/swagger.PNG)
 
-### Refresh Token
-- **Endpoint:** `POST /account/refresh`
-- **Permissions:** Requires a valid refresh token
+Hierboven staan alle API-calls. Alles werkt op basis van de User-ID, wat betekent dat je geen omgevingen van andere gebruikers kunt ophalen, tenzij deze expliciet met jou zijn gedeeld. Zelfs dan kun je ze alleen bekijken, niet bewerken.
 
-### Confirm Email
-- **Endpoint:** `GET /account/confirmEmail`
-- **Permissions:** Public (Requires valid email confirmation token)
+**Voorbeeld:** Het ophalen van scenes gebeurt op basis van de User-ID. Een gebruiker kan alleen zijn eigen (maximaal 5) werelden ophalen. Is de gebruiker niet ingelogd? dan krijg je een melding dat je geen rechten hebt.
 
-### Resend Confirmation Email
-- **Endpoint:** `POST /account/resendConfirmationEmail`
-- **Permissions:** Public (Requires valid user credentials)
+- **Code voor de api staat in de folder: `/LU2-WebApi`**
 
-### Forgot Password
-- **Endpoint:** `POST /account/forgotPassword`
-- **Permissions:** Public
-
-### Reset Password
-- **Endpoint:** `POST /account/resetPassword`
-- **Permissions:** Public (Requires valid reset token)
-
-### Manage Two-Factor Authentication (2FA)
-- **Endpoint:** `POST /account/manage/2fa`
-- **Permissions:** Requires User role
-
-### Get User Account Info
-- **Endpoint:** `GET /account/manage/info`
-- **Permissions:** Requires User role
-
-### Update User Account Info
-- **Endpoint:** `POST /account/manage/info`
-- **Permissions:** Requires User role
-
-### Logout
-- **Endpoint:** `POST /account/logout`
-- **Permissions:** Requires authentication
-
-## Debugging
-
-### Get User Claims (Debugging)
-- **Endpoint:** `GET /debug/claims`
-- **Permissions:** Requires Admin role
-
-## API Health Check
-
-### Health Check
-- **Endpoint:** `GET /`
-- **Permissions:** Public (No authentication required)
-
-## Object2D
-
-### Get All Object2D Items
-- **Endpoint:** `GET /Object2D`
-- **Permissions:** Requires Read permission
-
-### Create a New Object2D Item
-- **Endpoint:** `POST /Object2D`
-- **Permissions:** Requires Write permission
-
-### Get Object2D Item by ID
-- **Endpoint:** `GET /Object2D/{id}`
-- **Permissions:** Requires Read permission
-
-### Update an Object2D Item
-- **Endpoint:** `PUT /Object2D/{id}`
-- **Permissions:** Requires Write permission
-
-### Delete an Object2D Item
-- **Endpoint:** `DELETE /Object2D/{id}`
-- **Permissions:** Requires Delete permission
-- **Allowed Role:** Admin
-
-
-
-# API Endpoints & Responses
-
-## Environment Endpoints
-
-### GET `/api/environments` → Get all environments
-- **Status Codes:**
-  - `200 OK` → Successful response
-  - `500 Internal Server Error` → Server error
-
-#### **Response**
-```json
-{
-  "environments": [
-    {
-      "id": 1,
-      "name": "Forest",
-      "maxHeight": 500,
-      "maxLength": 800
-    },
-    {
-      "id": 2,
-      "name": "Desert",
-      "maxHeight": 300,
-      "maxLength": 600
-    }
-  ]
-}
-```
-
-### GET `/api/environments/{id}` → Get a specific environment by ID
-- **Status Codes:**
-  - `200 OK` → Environment found
-  - `404 Not Found` → Environment not found
-
-#### **Response**
-```json
-{
-  "id": 1,
-  "name": "Forest",
-  "maxHeight": 500,
-  "maxLength": 800
-}
-```
-
-#### **Error (404 Not Found)**
-```json
-{
-  "error": "Not Found",
-  "message": "Environment with ID 99 not found."
-}
-```
-
-### POST `/api/environments` → Create a new environment
-- **Status Codes:**
-  - `201 Created` → Successfully created
-  - `400 Bad Request` → Invalid input
-
-#### **Request Body**
-```json
-{
-  "name": "Ocean",
-  "maxHeight": 1000,
-  "maxLength": 2000
-}
-```
-
-#### **Response**
-```json
-{
-  "id": 3,
-  "name": "Ocean",
-  "maxHeight": 1000,
-  "maxLength": 2000
-}
-```
-
-#### **Error (400 Bad Request)**
-```json
-{
-  "error": "Bad Request",
-  "message": "Missing required field: name."
-}
-```
-
-### PUT `/api/environments/{id}` → Update an environment
-- **Status Codes:**
-  - `200 OK` → Successfully updated
-  - `400 Bad Request` → Invalid input
-  - `404 Not Found` → Environment not found
-
-#### **Request Body**
-```json
-{
-  "name": "Updated Forest",
-  "maxHeight": 600,
-  "maxLength": 900
-}
-```
-
-#### **Response**
-```json
-{
-  "id": 1,
-  "name": "Updated Forest",
-  "maxHeight": 600,
-  "maxLength": 900
-}
-```
-
-### DELETE `/api/environments/{id}` → Delete an environment
-- **Status Codes:**
-  - `204 No Content` → Successfully deleted
-  - `404 Not Found` → Environment not found
-
-#### **Response**
-```json
-{}
-```
-
----
-
-## Object Endpoints
-
-### GET `/api/environments/{envId}/objects` → Get all objects in an environment
-- **Status Codes:**
-  - `200 OK` → Objects retrieved
-  - `404 Not Found` → Environment not found
-
-#### **Response**
-```json
-{
-  "objects": [
-    {
-      "id": 101,
-      "prefabId": "tree-01",
-      "positionX": 150,
-      "positionY": 200,
-      "scaleX": 1.5,
-      "scaleY": 1.5,
-      "rotationZ": 45
-    },
-    {
-      "id": 102,
-      "prefabId": "rock-02",
-      "positionX": 300,
-      "positionY": 400,
-      "scaleX": 1.0,
-      "scaleY": 1.0,
-      "rotationZ": 0
-    }
-  ]
-}
-```
-
-### PUT `/api/environments/{envId}/objects/{id}` → Update an object
-### DELETE `/api/environments/{envId}/objects/{id}` → Delete an object
-
----
-
-## User Endpoints
-
-### POST `/api/users/register` → Register a new user
-- **Status Codes:**
-  - `201 Created` → User successfully registered
-  - `400 Bad Request` → Invalid data
-
-#### **Request Body**
-```json
-{
-  "username": "JohnDoe",
-  "password": "securepassword123"
-}
-```
-
-#### **Response**
-```json
-{
-  "message": "User registered successfully",
-  "userId": 10
-}
-```
-
-#### **Error (400 Bad Request)**
-```json
-{
-  "error": "Bad Request",
-  "message": "Password must be at least 8 characters."
-}
-```
-
-### POST `/api/users/login` → Authenticate user
-- **Status Codes:**
-  - `200 OK` → Login successful
-  - `401 Unauthorized` → Invalid login
-
-#### **Request Body**
-```json
-{
-  "username": "JohnDoe",
-  "password": "securepassword123"
-}
-```
-
-#### **Response**
-```json
-{
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-#### **Error (401 Unauthorized)**
-```json
-{
-  "error": "Unauthorized",
-  "message": "Invalid username or password."
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-
-### GET `` → 
-- **Rights** ->
-- **Conditions** ->
-- **Status Codes:**
-  - `400` → 
-
-#### **Request Body**
-```json
-
-```
-
-
-# account-info
-### GET `https://localhost:7067/account-info/claims` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
-- **Status Codes:**
-  - `200` → Success
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-#### **Request Body**
-```json
-[
-  {
-    "id": 0,
-    "userId": "string",
-    "claimType": "string",
-    "claimValue": "string"
-  }
-]
-```
-### GET `https://localhost:7067/account-info/environments` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
-- **Status Codes:**
-  - `200` → Success
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-#### **Request Body**
-```json
-[
-  {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "name": "string",
-    "maxLength": 0,
-    "maxHeight": 0,
-    "createdAt": "2025-02-24T23:17:12.141Z",
-    "updatedAt": "2025-02-24T23:17:12.141Z",
-    "environmentType": 0
-  }
-]
-```
-
-
-# environment2d
-### GET `https://localhost:7067/environment2d` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> Je krijgt alleen data die gekoppeld staat aan jou account.
-- **Status Codes:**
-  - `200` → Success
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-#### **Request Body**
-```json
-[
-  {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "name": "string",
-    "maxLength": 0,
-    "maxHeight": 0,
-    "createdAt": "2025-02-24T23:17:12.141Z",
-    "updatedAt": "2025-02-24T23:17:12.141Z",
-    "environmentType": 0
-  }
-]
-```
-
-### POST `https://localhost:7067/environment2d` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> Naam moet uniek zijn per user, 1/25 karakters, max. 5 per user
-- **Status Codes:**
-  - `200` → Success
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-#### **Request Body**
-```json
-{
-  "name": "string",
-  "environmentType": 0
-}
-```
-
-### DELETE `https://localhost:7067/environment2d` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> environmentId, gebruiker moet ingelogd zijn om eigen wereld te verwijderen. anders niet.
-- **Status Codes:**
-  - `200` → Environment deleted successfully.
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-
-
-
-### POST `https://localhost:7067/environment2d` → 
-- **Rights** -> Ingelogd op eigen account + CanReadEntity
-- **Conditions** -> Naam moet uniek zijn per user, 1/25 karakters, max. 5 per user
-- **Status Codes:**
-  - `200` → Success
-  - `400` → Bad-request
-  - `403` → Forbidden
-
-#### **Request Body**
-```json
-{
-  "name": "string",
-  "environmentType": 0
-}
-```
+### Tests(MSTests & Postman):
+
+
