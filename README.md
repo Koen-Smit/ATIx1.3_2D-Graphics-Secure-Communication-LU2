@@ -131,7 +131,7 @@ Je kunt deze collectie natuurlijk ook uitvoeren zonder het inloggedeelte. Dan zi
 
 Voor een visuele weergave van alle tests, zie hieronder:
 
-![Img](Assets/postman.PNG)
+![Img](Assets/Postman.PNG)
 
 
 Script:
