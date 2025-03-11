@@ -141,4 +141,9 @@ Let op, het script/collection hieronder bevat geen wachtwoorden of andere zaken 
 
 Het test result lever ik in maar zet ik niet op de repo.
 
+## AANPASSING:
+na wat feedback te hebben ontvangen heb ik mijn systeemtesten aangepast naar:
+
+![Img](Assets/Postman-nieuw.PNG)
+
 ---
