@@ -14,42 +14,41 @@ public class AuthHandler : MonoBehaviour
 
     private void Start()
     {
-        APIManager.Instance.GetRequest("/account/username", OnUsernameReceived);
+        string savedToken = PlayerPrefs.GetString("authToken", "");
+        if (!string.IsNullOrEmpty(savedToken))
+        {
+            APIManager.Instance.SetAuthToken(savedToken);
+            APIManager.Instance.GetRequest("/account/username", OnUsernameReceived);
+        }
+        else
+        {
+            ResetUI();
+        }
     }
+
     private void OnUsernameReceived(APIResponse response)
     {
         loadingPanel.SetActive(true);
         if (response.Success && SceneManager.GetActiveScene().buildIndex == 0)
+        {
             SceneManager.LoadScene(1);
+        }
         ResetUI();
         loadingPanel.SetActive(false);
     }
 
     private void ShowInput(bool show)
     {
-        if (show)
-        {
-            loginButton.gameObject.SetActive(false);
-            registerButton.gameObject.SetActive(false);
+        loginButton.gameObject.SetActive(!show);
+        registerButton.gameObject.SetActive(!show);
 
-            usernameField.gameObject.SetActive(true);
-            passwordField.gameObject.SetActive(true);
-            submitButton.gameObject.SetActive(true);
-            backButton.gameObject.SetActive(true);
+        usernameField.gameObject.SetActive(show);
+        passwordField.gameObject.SetActive(show);
+        submitButton.gameObject.SetActive(show);
+        backButton.gameObject.SetActive(show);
 
-            submitButton.onClick.RemoveAllListeners();
-            submitButton.onClick.AddListener(SubmitRequest);
-        }
-        else
-        {
-            loginButton.gameObject.SetActive(true);
-            registerButton.gameObject.SetActive(true);
-
-            usernameField.gameObject.SetActive(false);
-            passwordField.gameObject.SetActive(false);
-            submitButton.gameObject.SetActive(false);
-            backButton.gameObject.SetActive(false);
-        }
+        submitButton.onClick.RemoveAllListeners();
+        submitButton.onClick.AddListener(SubmitRequest);
 
         resultText.gameObject.SetActive(true);
     }
@@ -79,16 +78,26 @@ public class AuthHandler : MonoBehaviour
         string endpoint = isLogin ? "/account/login" : "/account/register";
         APIManager.Instance.PostRequest(endpoint, jsonData, OnResponse);
     }
+
     private void OnResponse(APIResponse response)
     {
         if (response.Success)
         {
-            resultText.gameObject.SetActive(true);
             resultText.text = isLogin ? "Ingelogd" : "Account aangemaakt";
-            if (isLogin)
-                SceneManager.LoadScene(1);
 
-            resultText.gameObject.SetActive(true);
+            if (isLogin)
+            {
+                var jsonResponse = JsonUtility.FromJson<AuthResponse>(response.Data);
+
+                if (jsonResponse != null && !string.IsNullOrEmpty(jsonResponse.token))
+                {
+                    PlayerPrefs.SetString("authToken", jsonResponse.token);
+                    PlayerPrefs.Save();
+                    APIManager.Instance.SetAuthToken(jsonResponse.token);
+                    SceneManager.LoadScene(1);
+                }
+            }
+
             ResetUI();
         }
         else
@@ -101,11 +110,22 @@ public class AuthHandler : MonoBehaviour
             };
         }
     }
+    private class AuthResponse
+    {
+        public string token;
+    }
     private void ResetUI()
     {
         ShowInput(false);
         usernameField.text = "";
         passwordField.text = "";
         resultText.gameObject.SetActive(true);
+    }
+
+    public void Logout()
+    {
+        PlayerPrefs.DeleteKey("authToken");
+        APIManager.Instance.SetAuthToken("");
+        SceneManager.LoadScene(0);
     }
 }

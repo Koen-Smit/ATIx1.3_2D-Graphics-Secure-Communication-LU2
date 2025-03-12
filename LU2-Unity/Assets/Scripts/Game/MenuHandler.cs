@@ -36,6 +36,8 @@ public class MenuHandler : MonoBehaviour
     {
         if (response.Success)
         {
+            PlayerPrefs.DeleteKey("authToken");
+            APIManager.Instance.SetAuthToken("");
             SceneManager.LoadScene(0);
         }
     }

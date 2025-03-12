@@ -8,6 +8,7 @@ public class APIManager : MonoBehaviour
 {
     private static APIManager _instance;
     private string baseUrl = "https://avansict2227609.azurewebsites.net";
+    private string authToken = "";
 
     public static APIManager Instance
     {
@@ -22,13 +23,39 @@ public class APIManager : MonoBehaviour
             return _instance;
         }
     }
+
+    private void Awake()
+    {
+        authToken = PlayerPrefs.GetString("authToken", "");
+    }
+
+    public void SetAuthToken(string token)
+    {
+        authToken = token;
+        PlayerPrefs.SetString("authToken", token);
+        PlayerPrefs.Save();
+    }
+
+    public void ClearAuthToken()
+    {
+        authToken = "";
+        PlayerPrefs.DeleteKey("authToken");
+        PlayerPrefs.Save();
+    }
+
     private void SetupRequest(UnityWebRequest request, string jsonData)
     {
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
+
+        if (!string.IsNullOrEmpty(authToken))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + authToken);
+        }
     }
+
     private void ResponseHandling(UnityWebRequest request, Action<APIResponse> callback)
     {
         if (callback == null)
@@ -36,17 +63,17 @@ public class APIManager : MonoBehaviour
             Debug.LogError("Callback is null, skipping response handling.");
             return;
         }
+
         int statusCode = (int)request.responseCode;
         if (request.result != UnityWebRequest.Result.Success)
         {
             APIResponse response = new APIResponse(false, "API Error: " + request.error, null, statusCode);
             callback?.Invoke(response);
-            // User is not logged in, so we return to the login screen
-            if (statusCode == 405)
+
+            if (statusCode == 401 || statusCode == 403) // Unauthorized, token is invalid
             {
-                Scene currentScene = SceneManager.GetActiveScene();
-                if (currentScene != null && currentScene.buildIndex != 0)
-                    SceneManager.LoadScene(0);
+                ClearAuthToken();
+                SceneManager.LoadScene(0);
             }
         }
         else
@@ -56,36 +83,42 @@ public class APIManager : MonoBehaviour
         }
     }
 
-
     // REQUESTS
     public void GetRequest(string endpoint, Action<APIResponse> callback)
     {
         StartCoroutine(GetRequestCoroutine(endpoint, callback));
     }
+
     public void PostRequest(string endpoint, string jsonData, Action<APIResponse> callback)
     {
         StartCoroutine(PostRequestCoroutine(endpoint, jsonData, callback));
     }
+
     public void PutRequest(string endpoint, string jsonData, Action<APIResponse> callback)
     {
         StartCoroutine(PutRequestCoroutine(endpoint, jsonData, callback));
     }
+
     public void DeleteRequest(string endpoint, Action<APIResponse> callback)
     {
         StartCoroutine(DeleteRequestCoroutine(endpoint, callback));
     }
-
-
 
     // COROUTINES
     private IEnumerator GetRequestCoroutine(string endpoint, Action<APIResponse> callback)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(baseUrl + endpoint))
         {
+            if (!string.IsNullOrEmpty(authToken))
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + authToken);
+            }
+
             yield return request.SendWebRequest();
             ResponseHandling(request, callback);
         }
     }
+
     private IEnumerator PostRequestCoroutine(string endpoint, string jsonData, Action<APIResponse> callback)
     {
         using (UnityWebRequest request = new UnityWebRequest(baseUrl + endpoint, "POST"))
@@ -95,6 +128,7 @@ public class APIManager : MonoBehaviour
             ResponseHandling(request, callback);
         }
     }
+
     private IEnumerator PutRequestCoroutine(string endpoint, string jsonData, Action<APIResponse> callback)
     {
         using (UnityWebRequest request = new UnityWebRequest(baseUrl + endpoint, "PUT"))
@@ -104,16 +138,18 @@ public class APIManager : MonoBehaviour
             ResponseHandling(request, callback);
         }
     }
+
     private IEnumerator DeleteRequestCoroutine(string endpoint, Action<APIResponse> callback)
     {
         using (UnityWebRequest request = UnityWebRequest.Delete(baseUrl + endpoint))
         {
+            if (!string.IsNullOrEmpty(authToken))
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + authToken);
+            }
+
             yield return request.SendWebRequest();
             ResponseHandling(request, callback);
         }
     }
-
-
 }
-
-
